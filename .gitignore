@@ -20,3 +20,4 @@ Desktop.ini
 # Temporary & Log files
 *.log
 *.tmp
+saved/
