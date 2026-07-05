@@ -1,0 +1,3171 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChromaMatrix Pro — Interactive Color Matrix & Palette Suite</title>
+    <meta name="description" content="Professional autosyncing color suite and interactive matrix generator with zoomable 128x128 grid, color family exploration, range interpolation, and custom drawing.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+/* ==========================================================================
+   ChromaMatrix Pro — Design System & Styles
+   Premium Studio Colorist Dark Theme with Glassmorphism
+   ========================================================================== */
+
+:root {
+    /* Color Palette Tokens */
+    --bg-app: #090d16;
+    --bg-workspace: #0d121f;
+    --bg-card: rgba(19, 27, 46, 0.75);
+    --bg-card-hover: rgba(26, 37, 63, 0.85);
+    --bg-input: rgba(10, 15, 26, 0.8);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-focus: rgba(59, 130, 246, 0.5);
+    
+    /* Brand & Accent Colors */
+    --accent-blue: #3b82f6;
+    --accent-purple: #8b5cf6;
+    --accent-pink: #ec4899;
+    --accent-emerald: #10b981;
+    --accent-amber: #f59e0b;
+    --danger-red: #ef4444;
+    
+    /* Typography Colors */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-inverse: #0f172a;
+    
+    /* Shadow & Glows */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --glow-blue: 0 0 15px rgba(59, 130, 246, 0.3);
+    
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base & Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    line-height: 1.5;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+}
+
+.font-mono {
+    font-family: 'Fira Code', monospace;
+}
+
+/* Glassmorphism Utility */
+.glass-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+}
+
+/* App Container Layout */
+#app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Header / Navbar */
+#app-header {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(9, 13, 22, 0.85);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 100;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 10px;
+}
+
+.logo-text h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+}
+
+.logo-text h1 span {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple), var(--accent-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.tagline {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-blue), #2563eb);
+    color: white;
+    box-shadow: var(--glow-blue);
+}
+
+.btn-primary:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Workspace Grid */
+#workspace {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    background: radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+                var(--bg-workspace);
+}
+
+/* Left Sidebar */
+#sidebar {
+    width: 420px;
+    min-width: 420px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    overflow-y: auto;
+    border-right: 1px solid var(--border-color);
+    z-index: 10;
+}
+
+/* Custom Scrollbar for Sidebar */
+#sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+#sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.panel {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.panel-header h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Master Color Picker */
+.master-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#master-color-picker {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: transparent;
+    overflow: hidden;
+}
+
+#master-color-picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+#master-color-picker::-webkit-color-swatch {
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    box-shadow: var(--shadow-sm);
+}
+
+.picker-hint {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* Color Input Groups */
+.color-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.group-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.hex-badge { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+.rgb-badge { background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); }
+.hsl-badge { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
+
+.btn-copy {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all var(--transition-fast);
+}
+
+.btn-copy:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-copy.copied {
+    color: var(--accent-emerald);
+}
+
+.input-row {
+    display: flex;
+    align-items: center;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 4px 10px;
+    transition: border-color var(--transition-fast);
+}
+
+.input-row:focus-within {
+    border-color: var(--border-focus);
+}
+
+.prefix {
+    color: var(--text-muted);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    margin-right: 4px;
+}
+
+.code-input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    width: 100%;
+    outline: none;
+}
+
+/* Sliders and Channel Rows */
+.channel-sliders {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.channel-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.channel-row label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    width: 14px;
+}
+
+.color-slider {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    outline: none;
+}
+
+.color-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+    transition: transform var(--transition-fast);
+}
+
+.color-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* Channel specific slider gradients */
+.slider-r { background: linear-gradient(to right, #000, #f00); }
+.slider-g { background: linear-gradient(to right, #000, #0f0); }
+.slider-b { background: linear-gradient(to right, #000, #00f); }
+.slider-hue { background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); }
+
+.num-input {
+    width: 50px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    padding: 4px 6px;
+    text-align: center;
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.num-input:focus {
+    border-color: var(--border-focus);
+}
+
+.num-input::-webkit-inner-spin-button,
+.num-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.num-suffix-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.num-suffix-wrapper .num-input {
+    padding-right: 18px;
+    width: 58px;
+}
+
+.unit {
+    position: absolute;
+    right: 6px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+/* Preview Card */
+.preview-box {
+    height: 110px;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2), var(--shadow-md);
+    transition: background-color var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.preview-text-sample {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    z-index: 2;
+}
+
+.text-white { color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+.text-black { color: #000000; text-shadow: 0 1px 2px rgba(255,255,255,0.5); }
+
+.sample-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.sample-sub {
+    font-size: 0.7rem;
+    opacity: 0.85;
+}
+
+/* Contrast Metrics */
+.contrast-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.metric-card {
+    background: rgba(0, 0, 0, 0.25);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.metric-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.metric-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.wcag-badge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.badge-pass { background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); }
+.badge-warn { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); }
+.badge-fail { background: rgba(239, 68, 68, 0.2); color: var(--danger-red); }
+
+.metric-value {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Harmonies Section */
+.harmonies-section h3 {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.harmony-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.harmony-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+}
+
+.harmony-item:hover {
+    transform: translateY(-2px);
+}
+
+.mini-swatch {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: var(--shadow-sm);
+}
+
+.harmony-item span {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+/* Right Panel: Matrix Section */
+#matrix-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 16px 16px 0;
+    gap: 12px;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Matrix Toolbar */
+#matrix-toolbar {
+    height: 54px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.mode-tabs {
+    display: flex;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px;
+    border-radius: 8px;
+    gap: 4px;
+}
+
+.tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-btn.active {
+    background: var(--accent-blue);
+    color: white;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+
+.toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--border-color);
+}
+
+.dimension-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ctrl-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+#slider-grid-size {
+    width: 100px;
+}
+
+.grid-size-display {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg-input);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    font-size: 0.85rem;
+}
+
+#input-grid-size {
+    width: 42px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    text-align: center;
+    outline: none;
+}
+
+.preset-buttons {
+    display: flex;
+    gap: 4px;
+}
+
+.btn-preset {
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-family: 'Fira Code', monospace;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-preset:hover, .btn-preset.active {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px 8px;
+    border-radius: 8px;
+}
+
+.btn-icon, .btn-text {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.btn-icon:hover, .btn-text:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.btn-text {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    font-weight: 600;
+}
+
+.btn-danger:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--danger-red);
+}
+
+#zoom-level {
+    width: 50px;
+    text-align: center;
+    font-size: 0.8rem;
+}
+
+/* Sub-Toolbar */
+#mode-subtoolbar {
+    min-height: 44px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+}
+
+.subtoolbar-group {
+    display: none;
+    width: 100%;
+    align-items: center;
+    gap: 20px;
+}
+
+.subtoolbar-group.active {
+    display: flex;
+}
+
+.subctrl-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.subctrl-item label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.subctrl-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.color-picker-compact {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-input);
+    padding: 2px 8px 2px 4px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.color-picker-compact input[type="color"] {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.code-input-small {
+    width: 68px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    outline: none;
+}
+
+/* Draw Mode Tools */
+.draw-tools {
+    display: flex;
+    gap: 6px;
+}
+
+.tool-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.tool-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+
+.tool-btn.active {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: var(--accent-purple);
+    color: #c4b5fd;
+}
+
+.brush-sizes {
+    display: flex;
+    gap: 4px;
+}
+
+.brush-size-btn {
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.brush-size-btn.active {
+    background: var(--text-primary);
+    color: var(--bg-app);
+    font-weight: 600;
+}
+
+.draw-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+}
+
+/* Canvas Viewport */
+#canvas-container {
+    flex: 1;
+    position: relative;
+    background: #060911;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#matrix-canvas {
+    display: block;
+    cursor: crosshair;
+    width: 100%;
+    height: 100%;
+}
+
+/* Hover Tooltip Popup Box */
+.tooltip-box {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 210px;
+    padding: 12px;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: var(--shadow-lg), 0 0 15px rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: opacity var(--transition-fast), transform 75ms ease-out;
+    background: rgba(15, 23, 42, 0.92);
+}
+
+.tooltip-box.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.95);
+}
+
+.tooltip-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 8px;
+}
+
+.tooltip-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--shadow-sm);
+}
+
+.coords-text {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.tooltip-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.8rem;
+}
+
+.tooltip-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.t-label {
+    color: var(--text-muted);
+}
+
+.t-val {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider-round {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 255, 255, 0.15);
+    transition: .2s;
+    border-radius: 20px;
+}
+
+.slider-round:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .2s;
+    border-radius: 50%;
+}
+
+input:checked + .slider-round {
+    background-color: var(--accent-blue);
+}
+
+input:checked + .slider-round:before {
+    transform: translateX(16px);
+}
+
+/* Checkbox Item */
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ==========================================================================
+   Integrated Left Panel Color Pickers
+   ========================================================================== */
+.picker-selection-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.35);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.picker-card {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.picker-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.picker-card.active {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+}
+
+.picker-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.picker-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.picker-card.active .picker-label {
+    color: var(--text-primary);
+}
+
+.active-badge {
+    font-size: 0.6rem;
+    padding: 1px 6px;
+    background: var(--accent-blue);
+    color: white;
+    display: none;
+    flex-shrink: 0;
+}
+
+.picker-card.active .active-badge {
+    display: inline-block;
+}
+
+.picker-card-body {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.color-swatch-wrapper {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.color-swatch-wrapper input[type="color"] {
+    width: 150%;
+    height: 150%;
+    margin: -25%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.picker-hex-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.swap-btn {
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.swap-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text-primary);
+    transform: rotate(180deg);
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <!-- Header / Navbar -->
+        <header id="app-header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1.5" fill="#3B82F6" stroke="none" />
+                        <rect x="14" y="3" width="7" height="7" rx="1.5" fill="#8B5CF6" stroke="none" />
+                        <rect x="3" y="14" width="7" height="7" rx="1.5" fill="#EC4899" stroke="none" />
+                        <rect x="14" y="14" width="7" height="7" rx="1.5" fill="#10B981" stroke="none" />
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>ChromaMatrix <span>Pro</span></h1>
+                    <p class="tagline">Interactive Color Matrix & Studio Suite</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="btn-export-png" class="btn btn-primary" title="Export current matrix as PNG image">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span>Export PNG</span>
+                </button>
+                <button id="btn-export-json" class="btn btn-secondary" title="Export matrix color data as JSON palette">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    <span>Export JSON</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main id="workspace">
+            <!-- Left Sidebar (Autosyncing Table & Preview) -->
+            <aside id="sidebar">
+                <!-- Top-Left Panel: Autosyncing Color Code Table -->
+                <section class="panel glass-card" id="panel-color-codes">
+                    <div class="panel-header">
+                        <h2>Color Code Sync</h2>
+                    </div>
+
+                    <!-- Master & Range Pickers Container -->
+                    <div id="picker-selection-area" class="picker-selection-area">
+                        <!-- Primary / Master Picker -->
+                        <div class="picker-card active" id="card-picker-primary" data-target="primary" title="Click to edit Primary / Start color">
+                            <div class="picker-card-top">
+                                <span class="picker-label" id="label-picker-primary">Master Color</span>
+                                <span class="badge active-badge">Editing</span>
+                            </div>
+                            <div class="picker-card-body">
+                                <div class="color-swatch-wrapper">
+                                    <input type="color" id="picker-primary" value="#3B82F6">
+                                </div>
+                                <span id="hex-display-primary" class="font-mono picker-hex-text">#3B82F6</span>
+                            </div>
+                        </div>
+
+                        <!-- Swap Button (Visible only in Range Mode) -->
+                        <button id="btn-left-swap" class="btn-icon swap-btn hidden" title="Swap Start and End Colors">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10h14l-4-4"/><path d="M17 14H3l4 4"/></svg>
+                        </button>
+
+                        <!-- Secondary Picker (Visible only in Range Mode) -->
+                        <div class="picker-card hidden" id="card-picker-secondary" data-target="secondary" title="Click to edit Secondary / End color">
+                            <div class="picker-card-top">
+                                <span class="picker-label">End Color</span>
+                                <span class="badge active-badge">Editing</span>
+                            </div>
+                            <div class="picker-card-body">
+                                <div class="color-swatch-wrapper">
+                                    <input type="color" id="picker-secondary" value="#FFCC00">
+                                </div>
+                                <span id="hex-display-secondary" class="font-mono picker-hex-text">#FFCC00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HEX Input -->
+                    <div class="color-group">
+                        <div class="group-label">
+                            <span class="badge hex-badge">HEX</span>
+                            <button class="btn-copy" data-target="input-hex" title="Copy HEX code">Copy</button>
+                        </div>
+                        <div class="input-row">
+                            <span class="prefix">#</span>
+                            <input type="text" id="input-hex" class="code-input font-mono" value="3B82F6" maxlength="6" spellcheck="false" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <!-- RGB Inputs -->
+                    <div class="color-group">
+                        <div class="group-label">
+                            <span class="badge rgb-badge">RGB</span>
+                            <button class="btn-copy" data-target="rgb-string" title="Copy RGB code">Copy</button>
+                        </div>
+                        <div class="channel-sliders">
+                            <div class="channel-row">
+                                <label for="input-r">R</label>
+                                <input type="range" id="slider-r" class="color-slider slider-r" min="0" max="255" value="59">
+                                <input type="number" id="input-r" class="num-input font-mono" min="0" max="255" value="59">
+                            </div>
+                            <div class="channel-row">
+                                <label for="input-g">G</label>
+                                <input type="range" id="slider-g" class="color-slider slider-g" min="0" max="255" value="130">
+                                <input type="number" id="input-g" class="num-input font-mono" min="0" max="255" value="130">
+                            </div>
+                            <div class="channel-row">
+                                <label for="input-b">B</label>
+                                <input type="range" id="slider-b" class="color-slider slider-b" min="0" max="255" value="246">
+                                <input type="number" id="input-b" class="num-input font-mono" min="0" max="255" value="246">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HSL Inputs -->
+                    <div class="color-group">
+                        <div class="group-label">
+                            <span class="badge hsl-badge">HSL</span>
+                            <button class="btn-copy" data-target="hsl-string" title="Copy HSL code">Copy</button>
+                        </div>
+                        <div class="channel-sliders">
+                            <div class="channel-row">
+                                <label for="input-h">H</label>
+                                <input type="range" id="slider-h" class="color-slider slider-hue" min="0" max="360" value="217">
+                                <div class="num-suffix-wrapper">
+                                    <input type="number" id="input-h" class="num-input font-mono" min="0" max="360" value="217">
+                                    <span class="unit">°</span>
+                                </div>
+                            </div>
+                            <div class="channel-row">
+                                <label for="input-s">S</label>
+                                <input type="range" id="slider-s" class="color-slider slider-sat" min="0" max="100" value="91">
+                                <div class="num-suffix-wrapper">
+                                    <input type="number" id="input-s" class="num-input font-mono" min="0" max="100" value="91">
+                                    <span class="unit">%</span>
+                                </div>
+                            </div>
+                            <div class="channel-row">
+                                <label for="input-l">L</label>
+                                <input type="range" id="slider-l" class="color-slider slider-light" min="0" max="100" value="60">
+                                <div class="num-suffix-wrapper">
+                                    <input type="number" id="input-l" class="num-input font-mono" min="0" max="100" value="60">
+                                    <span class="unit">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bottom-Left Panel: Color Preview & Analysis -->
+                <section class="panel glass-card" id="panel-color-preview">
+                    <div class="panel-header">
+                        <h2>Live Preview & Contrast</h2>
+                    </div>
+
+                    <!-- Preview Card -->
+                    <div id="preview-box" class="preview-box" style="background-color: rgb(59, 130, 246);">
+                        <div class="preview-text-sample text-white">
+                            <span class="sample-title">White Text</span>
+                            <span class="sample-sub">Readability Sample AAA/AA</span>
+                        </div>
+                        <div class="preview-text-sample text-black">
+                            <span class="sample-title">Black Text</span>
+                            <span class="sample-sub">Readability Sample AAA/AA</span>
+                        </div>
+                    </div>
+
+                    <!-- WCAG Contrast Ratios -->
+                    <div class="contrast-metrics">
+                        <div class="metric-card">
+                            <div class="metric-top">
+                                <span class="metric-label">vs. White Text</span>
+                                <span id="badge-white" class="wcag-badge badge-pass">AA</span>
+                            </div>
+                            <span id="ratio-white" class="metric-value font-mono">4.52:1</span>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-top">
+                                <span class="metric-label">vs. Black Text</span>
+                                <span id="badge-black" class="wcag-badge badge-pass">AAA</span>
+                            </div>
+                            <span id="ratio-black" class="metric-value font-mono">4.64:1</span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Harmonies -->
+                    <div class="harmonies-section">
+                        <h3>Quick Harmony Swatches</h3>
+                        <div class="harmony-grid">
+                            <div class="harmony-item" title="Complementary Color" data-label="Complementary">
+                                <div id="swatch-comp" class="mini-swatch" style="background-color: #f6b33b;"></div>
+                                <span>Comp</span>
+                            </div>
+                            <div class="harmony-item" title="Analogous Left" data-label="Analogous Left">
+                                <div id="swatch-ana1" class="mini-swatch" style="background-color: #3bf6e4;"></div>
+                                <span>Ana 1</span>
+                            </div>
+                            <div class="harmony-item" title="Analogous Right" data-label="Analogous Right">
+                                <div id="swatch-ana2" class="mini-swatch" style="background-color: #4d3bf6;"></div>
+                                <span>Ana 2</span>
+                            </div>
+                            <div class="harmony-item" title="Triadic 1" data-label="Triadic 1">
+                                <div id="swatch-tri1" class="mini-swatch" style="background-color: #f63b82;"></div>
+                                <span>Triad 1</span>
+                            </div>
+                            <div class="harmony-item" title="Triadic 2" data-label="Triadic 2">
+                                <div id="swatch-tri2" class="mini-swatch" style="background-color: #82f63b;"></div>
+                                <span>Triad 2</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+
+            <!-- Right Panel: Interactive Color Matrix -->
+            <section id="matrix-section">
+                <!-- Top Matrix Toolbar -->
+                <nav id="matrix-toolbar" class="glass-card">
+                    <!-- Mode Selector Tabs -->
+                    <div class="mode-tabs">
+                        <button class="tab-btn active" data-mode="family">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+                            <span>Color Family</span>
+                        </button>
+                        <button class="tab-btn" data-mode="range">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                            <span>Color Range</span>
+                        </button>
+                        <button class="tab-btn" data-mode="draw">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>
+                            <span>Custom Draw</span>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-divider"></div>
+
+                    <!-- Popup Info Box Switch -->
+                    <div class="tooltip-toggle-control" style="display: flex; align-items: center;">
+                        <button id="btn-toggle-tooltip" class="btn btn-secondary active" title="Toggle popup color info box on hover" style="padding: 6px 12px; font-size: 0.85rem; height: 36px; border-color: var(--accent-blue); background: rgba(59, 130, 246, 0.15); color: var(--text-primary);">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="12" y1="7" x2="12" y2="13"/></svg>
+                            <span id="tooltip-toggle-text">Popup: ON</span>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-divider"></div>
+
+                    <!-- Matrix Dimension Controls -->
+                    <div class="dimension-controls">
+                        <label for="input-grid-size" class="ctrl-label">Grid Size:</label>
+                        <input type="range" id="slider-grid-size" min="5" max="128" value="16" step="1" title="Adjust matrix grid dimension">
+                        <div class="grid-size-display font-mono">
+                            <input type="number" id="input-grid-size" min="5" max="128" value="16">
+                            <span>×</span>
+                            <span id="grid-size-h">16</span>
+                        </div>
+                        <div class="preset-buttons">
+                            <button class="btn-preset" data-size="5">5</button>
+                            <button class="btn-preset active" data-size="16">16</button>
+                            <button class="btn-preset" data-size="32">32</button>
+                            <button class="btn-preset" data-size="64">64</button>
+                            <button class="btn-preset" data-size="128">128</button>
+                        </div>
+                    </div>
+
+                    <div class="toolbar-divider"></div>
+
+                    <!-- Zoom & Pan Controls -->
+                    <div class="zoom-controls">
+                        <button id="btn-zoom-out" class="btn-icon" title="Zoom Out (-)">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                        </button>
+                        <span id="zoom-level" class="font-mono">100%</span>
+                        <button id="btn-zoom-in" class="btn-icon" title="Zoom In (+)">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                        </button>
+                        <button id="btn-zoom-fit" class="btn-text" title="Reset Zoom to Fit Screen (0)">Fit</button>
+                    </div>
+                </nav>
+
+                <!-- Sub-Toolbar for Active Mode Controls -->
+                <div id="mode-subtoolbar" class="glass-card">
+                    <!-- Family Mode Controls -->
+                    <div id="subtoolbar-family" class="subtoolbar-group active">
+                        <div class="subctrl-item">
+                            <span class="badge hex-badge">Hue Family</span>
+                            <span id="fam-hue-val" class="font-mono" style="font-weight: 600;">217°</span>
+                        </div>
+                        <div class="subctrl-item">
+                            <span class="badge rgb-badge">Sat Step (ΔS)</span>
+                            <span id="fam-step-sat" class="font-mono" style="font-weight: 600;">6.7% / cell</span>
+                        </div>
+                        <div class="subctrl-item">
+                            <span class="badge hsl-badge">Light Step (ΔL)</span>
+                            <span id="fam-step-light" class="font-mono" style="font-weight: 600;">6.7% / cell</span>
+                        </div>
+                        <div class="subctrl-info">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            <span>Range is ±20% SL around Master color (centered). If an edge reaches 0% or 100%, step size recalculates dynamically.</span>
+                        </div>
+                    </div>
+
+                    <!-- Range Mode Controls -->
+                    <div id="subtoolbar-range" class="subtoolbar-group">
+                        <div class="subctrl-item checkbox-item">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="check-shortest-hue" checked>
+                                <span class="slider-round"></span>
+                            </label>
+                            <span style="font-weight: 500;">Shortest Hue Path</span>
+                        </div>
+                        <div class="subctrl-info">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            <span>Select Start or End color on the left panel to edit its HEX, RGB, and HSL channels.</span>
+                        </div>
+                    </div>
+
+                    <!-- Custom Drawing Controls -->
+                    <div id="subtoolbar-draw" class="subtoolbar-group">
+                        <div class="draw-tools">
+                            <button class="tool-btn active" data-tool="brush" title="Paint Brush (B)">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+                                <span>Brush</span>
+                            </button>
+                            <button class="tool-btn" data-tool="fill" title="Flood Fill / Bucket (F)">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 11l-8-8-8.6 8.6a2 2 0 0 0 0 2.8l5.2 5.2c.8.8 2 .8 2.8 0L19 11z"/><path d="M5 2l5 5"/><path d="M2 13h15"/><path d="M22 20a2 2 0 1 1-4 0c0-1.6 1.7-3 2-3s2 1.4 2 3z"/></svg>
+                                <span>Fill</span>
+                            </button>
+                            <button class="tool-btn" data-tool="eyedropper" title="Eyedropper / Pick Color (I)">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4l6 6-9 9-6-6 9-9z"/><path d="M4 20l4-4"/><line x1="13" y1="5" x2="19" y2="11"/></svg>
+                                <span>Pick</span>
+                            </button>
+                            <button class="tool-btn" data-tool="eraser" title="Eraser (E)">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20H7L3 16C2 15 2 13 3 12L13 2L22 11L20 20Z"/><line x1="17" y1="17" x2="11" y2="11"/></svg>
+                                <span>Erase</span>
+                            </button>
+                        </div>
+                        <div class="toolbar-divider"></div>
+                        <div class="subctrl-item">
+                            <label>Brush Size:</label>
+                            <div class="brush-sizes">
+                                <button class="brush-size-btn active" data-size="1">1px</button>
+                                <button class="brush-size-btn" data-size="2">2px</button>
+                                <button class="brush-size-btn" data-size="3">3px</button>
+                                <button class="brush-size-btn" data-size="5">5px</button>
+                            </div>
+                        </div>
+                        <div class="toolbar-divider"></div>
+                        <div class="draw-actions">
+                            <button id="btn-import-img" class="btn btn-secondary" title="Load & compress image (PNG, JPG, GIF) into 128x128 grid" style="padding: 6px 12px; font-size: 0.8rem; height: 32px;">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                <span>Load Image</span>
+                            </button>
+                            <input type="file" id="input-import-img" accept="image/*" class="hidden">
+                            <button id="btn-undo" class="btn-icon" title="Undo (Ctrl+Z)" disabled>
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+                            </button>
+                            <button id="btn-redo" class="btn-icon" title="Redo (Ctrl+Y)" disabled>
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>
+                            </button>
+                            <button id="btn-clear-draw" class="btn-text btn-danger" title="Clear drawing grid">Clear</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Canvas Viewport Container -->
+                <div id="canvas-container">
+                    <canvas id="matrix-canvas"></canvas>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Floating Hover Tooltip Popup Box -->
+    <div id="color-tooltip" class="glass-card tooltip-box hidden">
+        <div class="tooltip-header">
+            <div id="tooltip-swatch" class="tooltip-swatch"></div>
+            <span id="tooltip-coords" class="font-mono coords-text">Col: 0, Row: 0</span>
+        </div>
+        <div class="tooltip-body font-mono">
+            <div class="tooltip-row">
+                <span class="t-label">HEX</span>
+                <span id="tooltip-hex" class="t-val">#000000</span>
+            </div>
+            <div class="tooltip-row">
+                <span class="t-label">RGB</span>
+                <span id="tooltip-rgb" class="t-val">0, 0, 0</span>
+            </div>
+            <div class="tooltip-row">
+                <span class="t-label">HSL</span>
+                <span id="tooltip-hsl" class="t-val">0°, 0%, 0%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts (Standard scripts work natively over file:// protocol without CORS errors) -->
+    <script>
+/**
+ * ChromaMatrix Pro — Color Mathematics & Conversions
+ * High-precision algorithms for HEX, RGB, HSL, WCAG contrast, and matrix interpolation.
+ * Attached to window.ColorMath to enable direct file:// protocol execution without CORS/module restrictions.
+ */
+
+// ==========================================
+// 1. Color Parsing & Validation
+// ==========================================
+
+function clamp(val, min, max) {
+    return Math.min(Math.max(val, min), max);
+}
+
+function cleanHex(hex) {
+    if (!hex) return '000000';
+    let cleaned = hex.toString().trim().replace(/^#/, '');
+    if (cleaned.length === 3) {
+        cleaned = cleaned.split('').map(char => char + char).join('');
+    }
+    if (!/^[0-9A-Fa-f]{6}$/.test(cleaned)) {
+        return null;
+    }
+    return cleaned.toUpperCase();
+}
+
+function isValidHex(hex) {
+    return cleanHex(hex) !== null;
+}
+
+// ==========================================
+// 2. Color Conversions (HEX <-> RGB <-> HSL)
+// ==========================================
+
+function hexToRgb(hex) {
+    const cleaned = cleanHex(hex) || '000000';
+    const num = parseInt(cleaned, 16);
+    return {
+        r: (num >> 16) & 255,
+        g: (num >> 8) & 255,
+        b: num & 255
+    };
+}
+
+function rgbToHex(r, g, b) {
+    const rc = clamp(Math.round(r), 0, 255);
+    const gc = clamp(Math.round(g), 0, 255);
+    const bc = clamp(Math.round(b), 0, 255);
+    return ((1 << 24) + (rc << 16) + (gc << 8) + bc).toString(16).slice(1).toUpperCase();
+}
+
+function rgbToHsl(r, g, b) {
+    r = clamp(r, 0, 255) / 255;
+    g = clamp(g, 0, 255) / 255;
+    b = clamp(b, 0, 255) / 255;
+
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+
+    if (max === min) {
+        h = s = 0; // achromatic
+    } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+
+    return {
+        h: Math.round(h * 360),
+        s: Math.round(s * 100),
+        l: Math.round(l * 100)
+    };
+}
+
+function hslToRgb(h, s, l) {
+    h = ((h % 360) + 360) % 360 / 360;
+    s = clamp(s, 0, 100) / 100;
+    l = clamp(l, 0, 100) / 100;
+
+    let r, g, b;
+
+    if (s === 0) {
+        r = g = b = l; // achromatic
+    } else {
+        const hue2rgb = (p, q, t) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        };
+
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+
+    return {
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
+    };
+}
+
+function hexToHsl(hex) {
+    const rgb = hexToRgb(hex);
+    return rgbToHsl(rgb.r, rgb.g, rgb.b);
+}
+
+function hslToHex(h, s, l) {
+    const rgb = hslToRgb(h, s, l);
+    return rgbToHex(rgb.r, rgb.g, rgb.b);
+}
+
+// ==========================================
+// 3. WCAG Contrast & Readability
+// ==========================================
+
+function getLuminance(r, g, b) {
+    const a = [r, g, b].map(v => {
+        v /= 255;
+        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+}
+
+function getContrastRatio(rgb1, rgb2) {
+    const lum1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
+    const lum2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
+    const brightest = Math.max(lum1, lum2);
+    const darkest = Math.min(lum1, lum2);
+    return (brightest + 0.05) / (darkest + 0.05);
+}
+
+function evaluateWcag(ratio) {
+    if (ratio >= 7) return { label: 'AAA', className: 'badge-pass' };
+    if (ratio >= 4.5) return { label: 'AA', className: 'badge-pass' };
+    if (ratio >= 3) return { label: 'AA Large', className: 'badge-warn' };
+    return { label: 'Fail', className: 'badge-fail' };
+}
+
+// ==========================================
+// 4. Matrix Color Generators
+// ==========================================
+
+/**
+ * Generates a Color Family Matrix for the selected Hue.
+ * X axis varies Saturation within ±20% of Master color (clamped to 0..100).
+ * Y axis varies Lightness within ±20% of Master color (clamped to 0..100).
+ * If an edge reaches 0 or 100%, that edge is set to 0 or 100% and step size recalculates,
+ * ensuring the Master color is always positioned at the center of the matrix.
+ */
+function generateFamilyMatrix(baseHex, cols, rows) {
+    const baseHsl = hexToHsl(baseHex);
+    const matrix = [];
+    
+    // Range is -20% to +20% of Master color, clamped to [0, 100]
+    const minS = clamp(baseHsl.s - 20, 0, 100);
+    const maxS = clamp(baseHsl.s + 20, 0, 100);
+    const minL = clamp(baseHsl.l - 20, 0, 100);
+    const maxL = clamp(baseHsl.l + 20, 0, 100);
+
+    // Center index where Master color sits
+    const cCenter = Math.floor((cols - 1) / 2);
+    const rCenter = Math.floor((rows - 1) / 2);
+
+    for (let r = 0; r < rows; r++) {
+        const rowData = [];
+        for (let c = 0; c < cols; c++) {
+            const h = baseHsl.h;
+            
+            // Saturation: piecewise linear so c=0 -> minS, c=cCenter -> baseHsl.s, c=cols-1 -> maxS
+            let s;
+            if (c <= cCenter) {
+                const step = cCenter > 0 ? (baseHsl.s - minS) / cCenter : 0;
+                s = clamp(Math.round(minS + c * step), 0, 100);
+            } else {
+                const step = (cols - 1 - cCenter) > 0 ? (maxS - baseHsl.s) / (cols - 1 - cCenter) : 0;
+                s = clamp(Math.round(baseHsl.s + (c - cCenter) * step), 0, 100);
+            }
+
+            // Lightness: r=rows-1 (bottom) -> minL, r=rCenter -> baseHsl.l, r=0 (top) -> maxL
+            let l;
+            if (r >= rCenter) {
+                // Bottom half of matrix (r from rCenter down to rows-1)
+                const step = (rows - 1 - rCenter) > 0 ? (baseHsl.l - minL) / (rows - 1 - rCenter) : 0;
+                l = clamp(Math.round(baseHsl.l - (r - rCenter) * step), 0, 100);
+            } else {
+                // Top half of matrix (r from 0 down to rCenter)
+                const step = rCenter > 0 ? (maxL - baseHsl.l) / rCenter : 0;
+                l = clamp(Math.round(maxL - r * step), 0, 100);
+            }
+
+            const hex = hslToHex(h, s, l);
+            const rgb = hslToRgb(h, s, l);
+            
+            rowData.push({
+                hex: `#${hex}`,
+                rgb: rgb,
+                hsl: { h, s, l },
+                col: c,
+                row: r
+            });
+        }
+        matrix.push(rowData);
+    }
+
+    // Attach step sizes for UI display (average step across matrix)
+    matrix.stepSat = cols > 1 ? (maxS - minS) / (cols - 1) : 0;
+    matrix.stepLight = rows > 1 ? (maxL - minL) / (rows - 1) : 0;
+    
+    return matrix;
+}
+
+/**
+ * Generates a Color Range Matrix between Top-Left (startHex) and Bottom-Right (endHex).
+ * Changes Hue along the diagonal (shortest angular path or linear).
+ * Changes Saturation along X and Lightness along Y.
+ */
+function generateRangeMatrix(startHex, endHex, cols, rows, shortestHue = true) {
+    const startHsl = hexToHsl(startHex);
+    const endHsl = hexToHsl(endHex);
+    const matrix = [];
+
+    // Calculate Hue difference
+    let deltaH = endHsl.h - startHsl.h;
+    if (shortestHue) {
+        if (deltaH > 180) deltaH -= 360;
+        else if (deltaH < -180) deltaH += 360;
+    }
+
+    for (let r = 0; r < rows; r++) {
+        const rowData = [];
+        const yProgress = rows > 1 ? r / (rows - 1) : 0;
+
+        for (let c = 0; c < cols; c++) {
+            const xProgress = cols > 1 ? c / (cols - 1) : 0;
+            
+            // Diagonal progress for Hue: average of x and y progress
+            const diagProgress = (xProgress + yProgress) / 2;
+
+            let h = Math.round((startHsl.h + diagProgress * deltaH + 360) % 360);
+            // Saturation varies along X axis
+            let s = Math.round(startHsl.s + xProgress * (endHsl.s - startHsl.s));
+            // Lightness varies along Y axis
+            let l = Math.round(startHsl.l + yProgress * (endHsl.l - startHsl.l));
+
+            s = clamp(s, 0, 100);
+            l = clamp(l, 0, 100);
+
+            const hex = hslToHex(h, s, l);
+            const rgb = hslToRgb(h, s, l);
+
+            rowData.push({
+                hex: `#${hex}`,
+                rgb: rgb,
+                hsl: { h, s, l },
+                col: c,
+                row: r
+            });
+        }
+        matrix.push(rowData);
+    }
+    return matrix;
+}
+
+// Export to global scope
+window.ColorMath = {
+    clamp,
+    cleanHex,
+    isValidHex,
+    hexToRgb,
+    rgbToHex,
+    rgbToHsl,
+    hslToRgb,
+    hexToHsl,
+    hslToHex,
+    getLuminance,
+    getContrastRatio,
+    evaluateWcag,
+    generateFamilyMatrix,
+    generateRangeMatrix
+};
+
+    </script>
+    <script>
+/**
+ * ChromaMatrix Pro — High-Performance HTML5 Canvas Matrix Renderer
+ * Supports 5x5 to 128x128 grid rendering, zoom & pan camera, cell hover tooltips, and interactive drawing.
+ */
+
+class MatrixRenderer {
+    constructor(canvas, tooltipEl, onColorPickCallback) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.tooltipEl = tooltipEl;
+        this.onColorPickCallback = onColorPickCallback;
+
+        // Grid & Data State
+        this.gridSize = 16;
+        this.mode = 'family'; // 'family', 'range', 'draw'
+        this.matrixData = [];
+        this.drawGridData = [];
+        
+        // Camera / Viewport State
+        this.zoom = 1.0;
+        this.minZoom = 0.5;
+        this.maxZoom = 30.0;
+        this.panX = 0;
+        this.panY = 0;
+        
+        // Interactive Drawing State
+        this.activeTool = 'brush'; // 'brush', 'fill', 'eyedropper', 'eraser'
+        this.brushSize = 1;
+        this.brushColor = '#3B82F6';
+        this.isDrawing = false;
+        this.isPanning = false;
+        this.panStartX = 0;
+        this.panStartY = 0;
+        
+        // Undo / Redo History Stack for Custom Drawing
+        this.history = [];
+        this.historyIndex = -1;
+        this.maxHistory = 40;
+
+        // Tooltip State
+        this.hoveredCell = null;
+        this.tooltipEnabled = true;
+
+        // Initialize drawing grid
+        this.initDrawGrid(16);
+        this.bindEvents();
+    }
+
+    /**
+     * Resize canvas to match container size while maintaining Retina/DPI sharpness
+     */
+    setDimensions(width, height) {
+        const dpr = window.devicePixelRatio || 1;
+        this.canvas.width = width * dpr;
+        this.canvas.height = height * dpr;
+        this.canvas.style.width = `${width}px`;
+        this.canvas.style.height = `${height}px`;
+        this.ctx.scale(dpr, dpr);
+        this.render();
+    }
+
+    /**
+     * Change matrix grid dimensions (5 to 128) and rescale existing drawing
+     */
+    setGridSize(size) {
+        if (size === this.gridSize) return;
+        const oldSize = this.gridSize;
+        this.gridSize = size;
+        
+        // Rescale existing drawing to fit new grid dimensions
+        const newDrawGrid = [];
+        for (let r = 0; r < size; r++) {
+            const row = [];
+            const rOld = Math.min(Math.floor(r * (oldSize / size)), oldSize - 1);
+            for (let c = 0; c < size; c++) {
+                const cOld = Math.min(Math.floor(c * (oldSize / size)), oldSize - 1);
+                if (this.drawGridData[rOld] && this.drawGridData[rOld][cOld]) {
+                    const oldCell = this.drawGridData[rOld][cOld];
+                    row.push(this.createCellData(oldCell.hex, c, r));
+                } else {
+                    row.push(this.createCellData('#131B2E', c, r));
+                }
+            }
+            newDrawGrid.push(row);
+        }
+        this.drawGridData = newDrawGrid;
+        this.saveHistory();
+        this.render();
+    }
+
+    createCellData(hex, c, r) {
+        const { hexToRgb, rgbToHsl } = window.ColorMath;
+        const rgb = hexToRgb(hex);
+        const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+        return { hex, rgb, hsl, col: c, row: r };
+    }
+
+    initDrawGrid(size) {
+        this.drawGridData = [];
+        for (let r = 0; r < size; r++) {
+            const row = [];
+            for (let c = 0; c < size; c++) {
+                row.push(this.createCellData('#131B2E', c, r));
+            }
+            this.drawGridData.push(row);
+        }
+        this.saveHistory();
+    }
+
+    updateMatrixData(data) {
+        this.matrixData = data;
+        this.render();
+    }
+
+    setMode(mode) {
+        this.mode = mode;
+        this.render();
+    }
+
+    setBrushColor(hex) {
+        this.brushColor = hex;
+    }
+
+    setTool(tool) {
+        this.activeTool = tool;
+        if (tool === 'eyedropper') {
+            this.canvas.style.cursor = 'cell';
+        } else if (tool === 'eraser' || tool === 'brush' || tool === 'fill') {
+            this.canvas.style.cursor = 'crosshair';
+        }
+        this.render();
+    }
+
+    setBrushSize(size) {
+        this.brushSize = parseInt(size, 10);
+        this.render();
+    }
+
+    // ==========================================
+    // Camera Zoom & Pan Methods
+    // ==========================================
+
+    zoomIn() {
+        this.setZoom(this.zoom * 1.25);
+    }
+
+    zoomOut() {
+        this.setZoom(this.zoom / 1.25);
+    }
+
+    resetZoom() {
+        this.zoom = 1.0;
+        this.panX = 0;
+        this.panY = 0;
+        this.render();
+        this.updateZoomDisplay();
+    }
+
+    setZoom(newZoom, centerX = null, centerY = null) {
+        newZoom = Math.min(Math.max(newZoom, this.minZoom), this.maxZoom);
+        if (newZoom === this.zoom) return;
+
+        const rect = this.canvas.getBoundingClientRect();
+        const cx = centerX !== null ? centerX : rect.width / 2;
+        const cy = centerY !== null ? centerY : rect.height / 2;
+
+        // Zoom centered on cursor/center
+        const scale = newZoom / this.zoom;
+        this.panX = cx - (cx - this.panX) * scale;
+        this.panY = cy - (cy - this.panY) * scale;
+        this.zoom = newZoom;
+
+        this.render();
+        this.updateZoomDisplay();
+    }
+
+    updateZoomDisplay() {
+        const el = document.getElementById('zoom-level');
+        if (el) {
+            el.textContent = `${Math.round(this.zoom * 100)}%`;
+        }
+    }
+
+    // ==========================================
+    // Rendering Engine
+    // ==========================================
+
+    render() {
+        const rect = this.canvas.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
+
+        // Clear background
+        this.ctx.fillStyle = '#060911';
+        this.ctx.fillRect(0, 0, w, h);
+
+        const data = this.mode === 'draw' ? this.drawGridData : this.matrixData;
+        if (!data || data.length === 0) return;
+
+        const size = this.gridSize;
+        const baseCellSize = Math.min(w, h) / (size + 2);
+        const cellSize = baseCellSize * this.zoom;
+        
+        // Center grid when at pan=0
+        const gridWidth = size * cellSize;
+        const gridHeight = size * cellSize;
+        const offsetX = (w - gridWidth) / 2 + this.panX;
+        const offsetY = (h - gridHeight) / 2 + this.panY;
+
+        // Draw cells
+        for (let r = 0; r < size; r++) {
+            if (!data[r]) continue;
+            for (let c = 0; c < size; c++) {
+                const cell = data[r][c];
+                if (!cell) continue;
+
+                const x = offsetX + c * cellSize;
+                const y = offsetY + r * cellSize;
+
+                // Viewport culling (skip drawing cells outside canvas bounds)
+                if (x + cellSize < 0 || x > w || y + cellSize < 0 || y > h) continue;
+
+                this.ctx.fillStyle = cell.hex;
+                this.ctx.fillRect(Math.floor(x), Math.floor(y), Math.ceil(cellSize), Math.ceil(cellSize));
+
+                // Draw crisp grid lines only if cells are large enough (> 5px) to prevent moiré patterns
+                if (cellSize > 5) {
+                    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                    this.ctx.lineWidth = 1;
+                    this.ctx.strokeRect(Math.floor(x), Math.floor(y), Math.ceil(cellSize), Math.ceil(cellSize));
+                }
+            }
+        }
+
+        // Highlight hovered cell / brush indicator box with sleek border glow
+        if (this.hoveredCell && this.hoveredCell.col < size && this.hoveredCell.row < size) {
+            let startCol = this.hoveredCell.col;
+            let endCol = this.hoveredCell.col;
+            let startRow = this.hoveredCell.row;
+            let endRow = this.hoveredCell.row;
+
+            if (this.mode === 'draw' && (this.activeTool === 'brush' || this.activeTool === 'eraser')) {
+                const N = this.brushSize || 1;
+                startCol = Math.max(0, this.hoveredCell.col - Math.floor((N - 1) / 2));
+                endCol = Math.min(size - 1, this.hoveredCell.col + Math.floor(N / 2));
+                startRow = Math.max(0, this.hoveredCell.row - Math.floor((N - 1) / 2));
+                endRow = Math.min(size - 1, this.hoveredCell.row + Math.floor(N / 2));
+            }
+
+            const hx = offsetX + startCol * cellSize;
+            const hy = offsetY + startRow * cellSize;
+            const boxWidth = (endCol - startCol + 1) * cellSize;
+            const boxHeight = (endRow - startRow + 1) * cellSize;
+
+            // Draw outer sleek glow and crisp border
+            this.ctx.save();
+            this.ctx.strokeStyle = '#FFFFFF';
+            this.ctx.lineWidth = Math.max(2, cellSize * 0.08);
+            this.ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+            this.ctx.shadowBlur = 4;
+            this.ctx.strokeRect(hx, hy, boxWidth, boxHeight);
+
+            // If in brush/eraser mode and brushSize > 1, add a subtle inner accent border
+            if (this.mode === 'draw' && (this.activeTool === 'brush' || this.activeTool === 'eraser') && (this.brushSize || 1) > 1) {
+                this.ctx.strokeStyle = this.activeTool === 'eraser' ? '#EF4444' : '#3B82F6';
+                this.ctx.lineWidth = Math.max(1, cellSize * 0.04);
+                this.ctx.strokeRect(hx + 1, hy + 1, boxWidth - 2, boxHeight - 2);
+            }
+            this.ctx.restore();
+        }
+    }
+
+    // ==========================================
+    // Mouse & Touch Event Handling
+    // ==========================================
+
+    bindEvents() {
+        this.canvas.addEventListener('mousemove', (e) => this.onMouseMove(e));
+        this.canvas.addEventListener('mousedown', (e) => this.onMouseDown(e));
+        window.addEventListener('mouseup', (e) => this.onMouseUp(e));
+        this.canvas.addEventListener('mouseleave', (e) => this.onMouseLeave(e));
+        this.canvas.addEventListener('wheel', (e) => this.onWheel(e), { passive: false });
+        
+        // Prevent context menu on right click
+        this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    }
+
+    getCellFromMouse(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        const size = this.gridSize;
+        const baseCellSize = Math.min(rect.width, rect.height) / (size + 2);
+        const cellSize = baseCellSize * this.zoom;
+        
+        const gridWidth = size * cellSize;
+        const gridHeight = size * cellSize;
+        const offsetX = (rect.width - gridWidth) / 2 + this.panX;
+        const offsetY = (rect.height - gridHeight) / 2 + this.panY;
+
+        const col = Math.floor((mouseX - offsetX) / cellSize);
+        const row = Math.floor((mouseY - offsetY) / cellSize);
+
+        if (col >= 0 && col < size && row >= 0 && row < size) {
+            return { col, row };
+        }
+        return null;
+    }
+
+    onMouseMove(e) {
+        if (this.isPanning) {
+            const dx = e.clientX - this.panStartX;
+            const dy = e.clientY - this.panStartY;
+            this.panX += dx;
+            this.panY += dy;
+            this.panStartX = e.clientX;
+            this.panStartY = e.clientY;
+            this.render();
+            return;
+        }
+
+        const cellCoords = this.getCellFromMouse(e);
+        
+        if (cellCoords) {
+            const data = this.mode === 'draw' ? this.drawGridData : this.matrixData;
+            const cell = data[cellCoords.row] && data[cellCoords.row][cellCoords.col];
+            
+            if (cell) {
+                this.hoveredCell = cellCoords;
+                this.showTooltip(e, cell);
+                
+                // If dragging in draw mode, paint while moving
+                if (this.isDrawing && this.mode === 'draw') {
+                    if (this.activeTool === 'brush') {
+                        this.paintAt(cellCoords.col, cellCoords.row, this.brushColor);
+                    } else if (this.activeTool === 'eraser') {
+                        this.paintAt(cellCoords.col, cellCoords.row, '#131B2E');
+                    }
+                }
+                this.render();
+                return;
+            }
+        }
+
+        if (this.hoveredCell) {
+            this.hoveredCell = null;
+            this.hideTooltip();
+            this.render();
+        }
+    }
+
+    onMouseDown(e) {
+        // Middle click (button 1) or right click (button 2) or Space held -> Pan
+        if (e.button === 1 || e.button === 2 || e.spaceKey) {
+            this.isPanning = true;
+            this.panStartX = e.clientX;
+            this.panStartY = e.clientY;
+            this.canvas.style.cursor = 'grabbing';
+            return;
+        }
+
+        if (e.button === 0) {
+            const cellCoords = this.getCellFromMouse(e);
+            if (!cellCoords) return;
+
+            if (this.mode === 'draw') {
+                this.isDrawing = true;
+                if (this.activeTool === 'brush') {
+                    this.paintAt(cellCoords.col, cellCoords.row, this.brushColor);
+                    this.saveHistory();
+                } else if (this.activeTool === 'eraser') {
+                    this.paintAt(cellCoords.col, cellCoords.row, '#131B2E');
+                    this.saveHistory();
+                } else if (this.activeTool === 'fill') {
+                    this.floodFill(cellCoords.col, cellCoords.row, this.brushColor);
+                    this.saveHistory();
+                } else if (this.activeTool === 'eyedropper') {
+                    const cell = this.drawGridData[cellCoords.row][cellCoords.col];
+                    if (cell && this.onColorPickCallback) {
+                        this.onColorPickCallback(cell.hex);
+                    }
+                }
+                this.render();
+            } else {
+                // In Family or Range mode, left click picks the color to left panel!
+                const data = this.matrixData;
+                const cell = data[cellCoords.row] && data[cellCoords.row][cellCoords.col];
+                if (cell && this.onColorPickCallback) {
+                    this.onColorPickCallback(cell.hex);
+                }
+            }
+        }
+    }
+
+    onMouseUp(e) {
+        if (this.isPanning) {
+            this.isPanning = false;
+            this.canvas.style.cursor = this.activeTool === 'eyedropper' ? 'cell' : 'crosshair';
+        }
+        if (this.isDrawing) {
+            this.isDrawing = false;
+        }
+    }
+
+    onMouseLeave(e) {
+        this.isDrawing = false;
+        this.isPanning = false;
+        if (this.hoveredCell) {
+            this.hoveredCell = null;
+            this.hideTooltip();
+            this.render();
+        }
+    }
+
+    onWheel(e) {
+        e.preventDefault();
+        const rect = this.canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        const zoomFactor = e.deltaY < 0 ? 1.15 : (1 / 1.15);
+        this.setZoom(this.zoom * zoomFactor, mouseX, mouseY);
+    }
+
+    // ==========================================
+    // Tooltip Popup Box Management
+    // ==========================================
+
+    showTooltip(e, cell) {
+        if (!this.tooltipEl || !this.tooltipEnabled) return;
+        this.tooltipEl.classList.remove('hidden');
+        
+        const swatch = document.getElementById('tooltip-swatch');
+        const coords = document.getElementById('tooltip-coords');
+        const hexEl = document.getElementById('tooltip-hex');
+        const rgbEl = document.getElementById('tooltip-rgb');
+        const hslEl = document.getElementById('tooltip-hsl');
+
+        if (swatch) swatch.style.backgroundColor = cell.hex;
+        if (coords) coords.textContent = `Col: ${cell.col + 1}, Row: ${cell.row + 1}`;
+        if (hexEl) hexEl.textContent = cell.hex;
+        if (rgbEl) rgbEl.textContent = `${cell.rgb.r}, ${cell.rgb.g}, ${cell.rgb.b}`;
+        if (hslEl) hslEl.textContent = `${cell.hsl.h}°, ${cell.hsl.s}%, ${cell.hsl.l}%`;
+
+        // Position tooltip near mouse without clipping outside screen
+        const tipWidth = 220;
+        const tipHeight = 140;
+        
+        let left = e.clientX + 15;
+        let top = e.clientY + 15;
+
+        if (left + tipWidth > window.innerWidth) {
+            left = e.clientX - tipWidth - 15;
+        }
+        if (top + tipHeight > window.innerHeight) {
+            top = e.clientY - tipHeight - 15;
+        }
+
+        this.tooltipEl.style.left = `${Math.max(10, left)}px`;
+        this.tooltipEl.style.top = `${Math.max(10, top)}px`;
+    }
+
+    hideTooltip() {
+        if (this.tooltipEl) {
+            this.tooltipEl.classList.add('hidden');
+        }
+    }
+
+    setTooltipEnabled(enabled) {
+        this.tooltipEnabled = enabled;
+        if (!enabled) {
+            this.hideTooltip();
+        }
+    }
+
+    // ==========================================
+    // Interactive Drawing Algorithms
+    // ==========================================
+
+    paintAt(centerCol, centerRow, hexColor) {
+        const size = this.gridSize;
+        const N = this.brushSize || 1;
+        const startCol = centerCol - Math.floor((N - 1) / 2);
+        const endCol = centerCol + Math.floor(N / 2);
+        const startRow = centerRow - Math.floor((N - 1) / 2);
+        const endRow = centerRow + Math.floor(N / 2);
+
+        for (let r = startRow; r <= endRow; r++) {
+            for (let c = startCol; c <= endCol; c++) {
+                if (r >= 0 && r < size && c >= 0 && c < size) {
+                    this.drawGridData[r][c] = this.createCellData(hexColor, c, r);
+                }
+            }
+        }
+    }
+
+    floodFill(startCol, startRow, replacementHex) {
+        const size = this.gridSize;
+        const targetHex = this.drawGridData[startRow][startCol].hex;
+        if (targetHex === replacementHex) return;
+
+        const queue = [{ col: startCol, row: startRow }];
+        const visited = new Set();
+
+        while (queue.length > 0) {
+            const { col, row } = queue.shift();
+            const key = `${col},${row}`;
+            if (visited.has(key)) continue;
+            visited.add(key);
+
+            if (this.drawGridData[row][col].hex === targetHex) {
+                this.drawGridData[row][col] = this.createCellData(replacementHex, col, row);
+
+                if (col > 0) queue.push({ col: col - 1, row });
+                if (col < size - 1) queue.push({ col: col + 1, row });
+                if (row > 0) queue.push({ col, row: row - 1 });
+                if (row < size - 1) queue.push({ col, row: row + 1 });
+            }
+        }
+    }
+
+    clearDrawGrid() {
+        this.initDrawGrid(this.gridSize);
+        this.render();
+    }
+
+    /**
+     * Loads an image file (PNG, JPEG, GIF, etc.), compresses/resamples it into a 128x128 grid,
+     * and sets it as the active drawing grid.
+     */
+    loadImageFile(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            alert('Please select a valid image file (PNG, JPEG, GIF, etc.).');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const targetSize = 128;
+                const offscreen = document.createElement('canvas');
+                offscreen.width = targetSize;
+                offscreen.height = targetSize;
+                const offCtx = offscreen.getContext('2d');
+
+                offCtx.drawImage(img, 0, 0, targetSize, targetSize);
+                const imgData = offCtx.getImageData(0, 0, targetSize, targetSize).data;
+
+                this.gridSize = targetSize;
+                if (window.appController && typeof window.appController.syncGridSizeUI === 'function') {
+                    window.appController.syncGridSizeUI(targetSize);
+                }
+
+                const newDrawGrid = [];
+                for (let r = 0; r < targetSize; r++) {
+                    const row = [];
+                    for (let c = 0; c < targetSize; c++) {
+                        const idx = (r * targetSize + c) * 4;
+                        const red = imgData[idx];
+                        const green = imgData[idx + 1];
+                        const blue = imgData[idx + 2];
+                        const alpha = imgData[idx + 3];
+
+                        let hex = '#131B2E';
+                        if (alpha > 30) {
+                            const { rgbToHex } = window.ColorMath;
+                            hex = `#${rgbToHex(red, green, blue)}`;
+                        }
+                        row.push(this.createCellData(hex, c, r));
+                    }
+                    newDrawGrid.push(row);
+                }
+
+                this.drawGridData = newDrawGrid;
+                this.saveHistory();
+                this.render();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // ==========================================
+    // Undo / Redo History Stack
+    // ==========================================
+
+    saveHistory() {
+        // Remove redo states beyond current index
+        if (this.historyIndex < this.history.length - 1) {
+            this.history = this.history.slice(0, this.historyIndex + 1);
+        }
+
+        // Deep clone current draw grid
+        const snapshot = this.drawGridData.map(row => row.map(cell => ({ ...cell })));
+        this.history.push(snapshot);
+
+        if (this.history.length > this.maxHistory) {
+            this.history.shift();
+        } else {
+            this.historyIndex++;
+        }
+        this.updateUndoRedoUI();
+    }
+
+    undo() {
+        if (this.historyIndex > 0) {
+            this.historyIndex--;
+            const snapshot = this.history[this.historyIndex];
+            this.gridSize = snapshot.length;
+            this.drawGridData = snapshot.map(row => row.map(cell => ({ ...cell })));
+            if (window.appController && typeof window.appController.syncGridSizeUI === 'function') {
+                window.appController.syncGridSizeUI(this.gridSize);
+            }
+            this.render();
+            this.updateUndoRedoUI();
+        }
+    }
+
+    redo() {
+        if (this.historyIndex < this.history.length - 1) {
+            this.historyIndex++;
+            const snapshot = this.history[this.historyIndex];
+            this.gridSize = snapshot.length;
+            this.drawGridData = snapshot.map(row => row.map(cell => ({ ...cell })));
+            if (window.appController && typeof window.appController.syncGridSizeUI === 'function') {
+                window.appController.syncGridSizeUI(this.gridSize);
+            }
+            this.render();
+            this.updateUndoRedoUI();
+        }
+    }
+
+    updateUndoRedoUI() {
+        const btnUndo = document.getElementById('btn-undo');
+        const btnRedo = document.getElementById('btn-redo');
+        if (btnUndo) btnUndo.disabled = this.historyIndex <= 0;
+        if (btnRedo) btnRedo.disabled = this.historyIndex >= this.history.length - 1;
+    }
+
+    // ==========================================
+    // Exporting Functionality
+    // ==========================================
+
+    exportPNG() {
+        const size = this.gridSize;
+        const cellPx = 32; // Export at crisp resolution
+        const exportW = size * cellPx;
+        const exportH = size * cellPx;
+
+        const offscreen = document.createElement('canvas');
+        offscreen.width = exportW;
+        offscreen.height = exportH;
+        const offCtx = offscreen.getContext('2d');
+
+        const data = this.mode === 'draw' ? this.drawGridData : this.matrixData;
+
+        for (let r = 0; r < size; r++) {
+            for (let c = 0; c < size; c++) {
+                const cell = data[r][c];
+                offCtx.fillStyle = cell.hex;
+                offCtx.fillRect(c * cellPx, r * cellPx, cellPx, cellPx);
+            }
+        }
+
+        const link = document.createElement('a');
+        link.download = `chroma-matrix-${this.mode}-${size}x${size}.png`;
+        link.href = offscreen.toDataURL('image/png');
+        link.click();
+    }
+
+    exportJSON() {
+        const data = this.mode === 'draw' ? this.drawGridData : this.matrixData;
+        const exportPayload = {
+            title: `ChromaMatrix ${this.mode.toUpperCase()} Palette`,
+            gridSize: `${this.gridSize}x${this.gridSize}`,
+            timestamp: new Date().toISOString(),
+            colors: data.map(row => row.map(cell => ({
+                hex: cell.hex,
+                rgb: cell.rgb,
+                hsl: cell.hsl,
+                col: cell.col,
+                row: cell.row
+            })))
+        };
+
+        const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.download = `chroma-palette-${this.mode}-${this.gridSize}x${this.gridSize}.json`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+    }
+}
+
+// Export to global scope
+window.MatrixRenderer = MatrixRenderer;
+
+    </script>
+    <script>
+/**
+ * ChromaMatrix Pro — Application Controller
+ * Unites left panel autosyncing color inputs, contrast preview, mode switching, and matrix rendering.
+ */
+
+class AppController {
+    constructor() {
+        this.currentHex = '#3B82F6';
+        this.primaryHex = '#3B82F6';
+        this.secondaryHex = '#FFCC00';
+        this.activePickerTarget = 'primary'; // 'primary' or 'secondary'
+        this.renderer = null;
+        this.isSyncing = false; // Guard to prevent circular input update loops
+
+        window.appController = this;
+        this.init();
+    }
+
+    init() {
+        this.setupRenderer();
+        this.bindColorInputs();
+        this.bindPickerSelection();
+        this.bindMatrixControls();
+        this.bindDrawTools();
+        this.bindQuickHarmonies();
+        this.bindCopyButtons();
+        this.bindExportButtons();
+        this.setupResizeListener();
+
+        // Initial sync
+        this.updateColorFromHex(this.primaryHex, 'init');
+    }
+
+    setupRenderer() {
+        const canvas = document.getElementById('matrix-canvas');
+        const tooltip = document.getElementById('color-tooltip');
+        const container = document.getElementById('canvas-container');
+
+        const MatrixRenderer = window.MatrixRenderer;
+        this.renderer = new MatrixRenderer(canvas, tooltip, (pickedHex) => {
+            this.updateColorFromHex(pickedHex);
+        });
+
+        // Set initial dimensions
+        const rect = container.getBoundingClientRect();
+        this.renderer.setDimensions(rect.width, rect.height);
+        this.updateMatrix();
+    }
+
+    setupResizeListener() {
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('canvas-container');
+            if (container && this.renderer) {
+                const rect = container.getBoundingClientRect();
+                this.renderer.setDimensions(rect.width, rect.height);
+            }
+        });
+    }
+
+    // ==========================================
+    // 1. Integrated Color Pickers & Autosyncing
+    // ==========================================
+
+    bindPickerSelection() {
+        const cardPrimary = document.getElementById('card-picker-primary');
+        const cardSecondary = document.getElementById('card-picker-secondary');
+        const pickerPrimary = document.getElementById('picker-primary');
+        const pickerSecondary = document.getElementById('picker-secondary');
+        const btnSwap = document.getElementById('btn-left-swap');
+
+        // Click on Primary Card -> Edit Primary
+        if (cardPrimary) {
+            cardPrimary.addEventListener('click', (e) => {
+                if (e.target.tagName === 'INPUT') return; // Handled by picker change
+                this.selectPicker('primary');
+            });
+        }
+
+        // Click on Secondary Card -> Edit Secondary
+        if (cardSecondary) {
+            cardSecondary.addEventListener('click', (e) => {
+                if (e.target.tagName === 'INPUT') return;
+                this.selectPicker('secondary');
+            });
+        }
+
+        // Native Color Picker Dialogs
+        if (pickerPrimary) {
+            pickerPrimary.addEventListener('input', (e) => {
+                this.selectPicker('primary', false);
+                this.updateColorFromHex(e.target.value, 'picker-primary');
+            });
+        }
+
+        if (pickerSecondary) {
+            pickerSecondary.addEventListener('input', (e) => {
+                this.selectPicker('secondary', false);
+                this.updateColorFromHex(e.target.value, 'picker-secondary');
+            });
+        }
+
+        // Swap Colors Button
+        if (btnSwap) {
+            btnSwap.addEventListener('click', () => {
+                const temp = this.primaryHex;
+                this.primaryHex = this.secondaryHex;
+                this.secondaryHex = temp;
+
+                // Update UI pickers
+                this.setPickerUI('primary', this.primaryHex);
+                this.setPickerUI('secondary', this.secondaryHex);
+
+                // Refresh currently edited color
+                const activeHex = this.activePickerTarget === 'secondary' ? this.secondaryHex : this.primaryHex;
+                this.updateColorFromHex(activeHex, 'swap');
+                this.updateMatrix();
+            });
+        }
+    }
+
+    selectPicker(target, loadColor = true) {
+        this.activePickerTarget = target;
+        const cardPrimary = document.getElementById('card-picker-primary');
+        const cardSecondary = document.getElementById('card-picker-secondary');
+
+        if (cardPrimary) cardPrimary.classList.toggle('active', target === 'primary');
+        if (cardSecondary) cardSecondary.classList.toggle('active', target === 'secondary');
+
+        if (loadColor) {
+            const hexToLoad = target === 'secondary' ? this.secondaryHex : this.primaryHex;
+            this.updateColorFromHex(hexToLoad, 'card-switch');
+        }
+    }
+
+    setPickerUI(target, hex) {
+        const pickerEl = document.getElementById(`picker-${target}`);
+        const hexEl = document.getElementById(`hex-display-${target}`);
+        if (pickerEl) pickerEl.value = hex;
+        if (hexEl) hexEl.textContent = hex;
+    }
+
+    updateColorFromHex(hex, source = 'external') {
+        if (this.isSyncing) return;
+        const { cleanHex, hexToRgb, rgbToHsl } = window.ColorMath;
+        
+        const cleaned = cleanHex(hex);
+        if (!cleaned) return;
+
+        this.isSyncing = true;
+        this.currentHex = `#${cleaned}`;
+
+        // Update active target hex (primary or secondary)
+        if (this.activePickerTarget === 'secondary' && this.renderer?.mode === 'range') {
+            this.secondaryHex = this.currentHex;
+            if (source !== 'picker-secondary') this.setPickerUI('secondary', this.currentHex);
+        } else {
+            this.primaryHex = this.currentHex;
+            if (source !== 'picker-primary') this.setPickerUI('primary', this.currentHex);
+        }
+
+        const rgb = hexToRgb(this.currentHex);
+        const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+        // Update HEX Input
+        const inputHex = document.getElementById('input-hex');
+        if (inputHex && source !== 'hex') inputHex.value = cleaned;
+
+        // Update RGB Inputs & Sliders
+        if (source !== 'rgb') {
+            this.setVal('input-r', rgb.r); this.setVal('slider-r', rgb.r);
+            this.setVal('input-g', rgb.g); this.setVal('slider-g', rgb.g);
+            this.setVal('input-b', rgb.b); this.setVal('slider-b', rgb.b);
+        }
+
+        // Update HSL Inputs & Sliders
+        if (source !== 'hsl') {
+            this.setVal('input-h', hsl.h); this.setVal('slider-h', hsl.h);
+            this.setVal('input-s', hsl.s); this.setVal('slider-s', hsl.s);
+            this.setVal('input-l', hsl.l); this.setVal('slider-l', hsl.l);
+        }
+
+        // Update Preview Card & Contrast Metrics
+        this.updatePreviewAndContrast(rgb, hsl);
+
+        // Update Renderer Brush Color & Active Matrix Mode
+        if (this.renderer) {
+            this.renderer.setBrushColor(this.currentHex);
+            this.updateMatrix();
+        }
+
+        this.isSyncing = false;
+    }
+
+    setVal(id, val) {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+    }
+
+    syncGridSizeUI(size) {
+        const sliderGrid = document.getElementById('slider-grid-size');
+        const inputGrid = document.getElementById('input-grid-size');
+        const gridH = document.getElementById('grid-size-h');
+
+        if (sliderGrid) sliderGrid.value = size;
+        if (inputGrid) inputGrid.value = size;
+        if (gridH) gridH.textContent = size;
+
+        document.querySelectorAll('.btn-preset').forEach(btn => {
+            btn.classList.toggle('active', parseInt(btn.dataset.size, 10) === size);
+        });
+    }
+
+    updatePreviewAndContrast(rgb, hsl) {
+        const { getContrastRatio, evaluateWcag } = window.ColorMath;
+        
+        // Preview background
+        const previewBox = document.getElementById('preview-box');
+        if (previewBox) previewBox.style.backgroundColor = this.currentHex;
+
+        // Calculate WCAG Contrast Ratios
+        const whiteRatio = getContrastRatio(rgb, { r: 255, g: 255, b: 255 });
+        const blackRatio = getContrastRatio(rgb, { r: 0, g: 0, b: 0 });
+
+        const whiteWcag = evaluateWcag(whiteRatio);
+        const blackWcag = evaluateWcag(blackRatio);
+
+        const elRatioWhite = document.getElementById('ratio-white');
+        const elBadgeWhite = document.getElementById('badge-white');
+        if (elRatioWhite) elRatioWhite.textContent = `${whiteRatio.toFixed(2)}:1`;
+        if (elBadgeWhite) {
+            elBadgeWhite.textContent = whiteWcag.label;
+            elBadgeWhite.className = `wcag-badge ${whiteWcag.className}`;
+        }
+
+        const elRatioBlack = document.getElementById('ratio-black');
+        const elBadgeBlack = document.getElementById('badge-black');
+        if (elRatioBlack) elRatioBlack.textContent = `${blackRatio.toFixed(2)}:1`;
+        if (elBadgeBlack) {
+            elBadgeBlack.textContent = blackWcag.label;
+            elBadgeBlack.className = `wcag-badge ${blackWcag.className}`;
+        }
+
+        // Update Quick Harmonies
+        this.updateHarmonySwatches(hsl);
+    }
+
+    updateHarmonySwatches(hsl) {
+        const { hslToHex } = window.ColorMath;
+        
+        // Complementary (180°)
+        const compHex = hslToHex((hsl.h + 180) % 360, hsl.s, hsl.l);
+        this.setSwatch('swatch-comp', `#${compHex}`);
+
+        // Analogous (±30°)
+        const ana1Hex = hslToHex((hsl.h + 30) % 360, hsl.s, hsl.l);
+        const ana2Hex = hslToHex((hsl.h + 330) % 360, hsl.s, hsl.l);
+        this.setSwatch('swatch-ana1', `#${ana1Hex}`);
+        this.setSwatch('swatch-ana2', `#${ana2Hex}`);
+
+        // Triadic (±120°)
+        const tri1Hex = hslToHex((hsl.h + 120) % 360, hsl.s, hsl.l);
+        const tri2Hex = hslToHex((hsl.h + 240) % 360, hsl.s, hsl.l);
+        this.setSwatch('swatch-tri1', `#${tri1Hex}`);
+        this.setSwatch('swatch-tri2', `#${tri2Hex}`);
+    }
+
+    setSwatch(id, hex) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.backgroundColor = hex;
+            const parent = el.parentElement;
+            parent.onclick = () => this.updateColorFromHex(hex);
+            parent.onmouseenter = (e) => this.showHarmonyTooltip(e, hex, parent.getAttribute('data-label') || parent.getAttribute('title') || 'Harmony');
+            parent.onmousemove = (e) => this.showHarmonyTooltip(e, hex, parent.getAttribute('data-label') || parent.getAttribute('title') || 'Harmony');
+            parent.onmouseleave = () => this.hideHarmonyTooltip();
+        }
+    }
+
+    showHarmonyTooltip(e, hex, label) {
+        if (this.renderer && !this.renderer.tooltipEnabled) return;
+        const tooltipEl = document.getElementById('color-tooltip');
+        if (!tooltipEl) return;
+
+        const { hexToRgb, hexToHsl } = window.ColorMath;
+        const rgb = hexToRgb(hex);
+        const hsl = hexToHsl(hex);
+
+        tooltipEl.classList.remove('hidden');
+        
+        const swatch = document.getElementById('tooltip-swatch');
+        const coords = document.getElementById('tooltip-coords');
+        const hexEl = document.getElementById('tooltip-hex');
+        const rgbEl = document.getElementById('tooltip-rgb');
+        const hslEl = document.getElementById('tooltip-hsl');
+
+        if (swatch) swatch.style.backgroundColor = hex;
+        if (coords) coords.textContent = label;
+        if (hexEl) hexEl.textContent = hex.toUpperCase();
+        if (rgbEl) rgbEl.textContent = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
+        if (hslEl) hslEl.textContent = `${hsl.h}°, ${hsl.s}%, ${hsl.l}%`;
+
+        const tipWidth = 220;
+        const tipHeight = 140;
+        
+        let left = e.clientX + 15;
+        let top = e.clientY + 15;
+
+        if (left + tipWidth > window.innerWidth) {
+            left = e.clientX - tipWidth - 15;
+        }
+        if (top + tipHeight > window.innerHeight) {
+            top = e.clientY - tipHeight - 15;
+        }
+
+        tooltipEl.style.left = `${Math.max(10, left)}px`;
+        tooltipEl.style.top = `${Math.max(10, top)}px`;
+    }
+
+    hideHarmonyTooltip() {
+        const tooltipEl = document.getElementById('color-tooltip');
+        if (tooltipEl) {
+            tooltipEl.classList.add('hidden');
+        }
+    }
+
+    bindColorInputs() {
+        const { isValidHex, clamp, rgbToHex, hslToHex } = window.ColorMath;
+        
+        // HEX Input
+        const inputHex = document.getElementById('input-hex');
+        if (inputHex) {
+            inputHex.addEventListener('input', (e) => {
+                const val = e.target.value;
+                if (isValidHex(val)) {
+                    this.updateColorFromHex(val, 'hex');
+                }
+            });
+        }
+
+        // RGB Inputs & Sliders
+        const updateFromRgb = () => {
+            const r = clamp(parseInt(document.getElementById('input-r').value || 0, 10), 0, 255);
+            const g = clamp(parseInt(document.getElementById('input-g').value || 0, 10), 0, 255);
+            const b = clamp(parseInt(document.getElementById('input-b').value || 0, 10), 0, 255);
+            const hex = rgbToHex(r, g, b);
+            this.updateColorFromHex(`#${hex}`, 'rgb');
+        };
+
+        ['r', 'g', 'b'].forEach(channel => {
+            const numEl = document.getElementById(`input-${channel}`);
+            const sliderEl = document.getElementById(`slider-${channel}`);
+            if (numEl && sliderEl) {
+                numEl.addEventListener('input', () => { sliderEl.value = numEl.value; updateFromRgb(); });
+                sliderEl.addEventListener('input', () => { numEl.value = sliderEl.value; updateFromRgb(); });
+            }
+        });
+
+        // HSL Inputs & Sliders
+        const updateFromHsl = () => {
+            const h = clamp(parseInt(document.getElementById('input-h').value || 0, 10), 0, 360);
+            const s = clamp(parseInt(document.getElementById('input-s').value || 0, 10), 0, 100);
+            const l = clamp(parseInt(document.getElementById('input-l').value || 0, 10), 0, 100);
+            const hex = hslToHex(h, s, l);
+            this.updateColorFromHex(`#${hex}`, 'hsl');
+        };
+
+        ['h', 's', 'l'].forEach(channel => {
+            const numEl = document.getElementById(`input-${channel}`);
+            const sliderEl = document.getElementById(`slider-${channel}`);
+            if (numEl && sliderEl) {
+                numEl.addEventListener('input', () => { sliderEl.value = numEl.value; updateFromHsl(); });
+                sliderEl.addEventListener('input', () => { numEl.value = sliderEl.value; updateFromHsl(); });
+            }
+        });
+    }
+
+    // ==========================================
+    // 2. Matrix Toolbar & Mode Switching
+    // ==========================================
+
+    bindMatrixControls() {
+        const { clamp } = window.ColorMath;
+        
+        // Mode Tabs
+        const tabBtns = document.querySelectorAll('.mode-tabs .tab-btn');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const mode = btn.dataset.mode;
+                document.querySelectorAll('.subtoolbar-group').forEach(group => group.classList.remove('active'));
+                const targetSub = document.getElementById(`subtoolbar-${mode}`);
+                if (targetSub) targetSub.classList.add('active');
+
+                // Adjust left panel pickers based on mode
+                const cardSec = document.getElementById('card-picker-secondary');
+                const btnSwap = document.getElementById('btn-left-swap');
+                const labelPrim = document.getElementById('label-picker-primary');
+
+                if (mode === 'range') {
+                    if (cardSec) cardSec.classList.remove('hidden');
+                    if (btnSwap) btnSwap.classList.remove('hidden');
+                    if (labelPrim) labelPrim.textContent = 'Start Color';
+                    
+                    // If secondary was active, make sure its color is loaded
+                    if (this.activePickerTarget === 'secondary') {
+                        this.updateColorFromHex(this.secondaryHex, 'mode-switch');
+                    } else {
+                        this.updateColorFromHex(this.primaryHex, 'mode-switch');
+                    }
+                } else {
+                    if (cardSec) cardSec.classList.add('hidden');
+                    if (btnSwap) btnSwap.classList.add('hidden');
+                    if (labelPrim) labelPrim.textContent = 'Master Color';
+                    
+                    // Revert to primary if secondary was selected
+                    if (this.activePickerTarget === 'secondary') {
+                        this.selectPicker('primary', true);
+                    } else {
+                        this.updateColorFromHex(this.primaryHex, 'mode-switch');
+                    }
+                }
+
+                if (this.renderer) {
+                    this.renderer.setMode(mode);
+                    this.updateMatrix();
+                }
+            });
+        });
+
+        // Popup Info Box Toggle
+        const btnToggleTip = document.getElementById('btn-toggle-tooltip');
+        const tipToggleText = document.getElementById('tooltip-toggle-text');
+        let tooltipOn = true;
+
+        if (btnToggleTip) {
+            btnToggleTip.addEventListener('click', () => {
+                tooltipOn = !tooltipOn;
+                if (tooltipOn) {
+                    btnToggleTip.style.borderColor = 'var(--accent-blue)';
+                    btnToggleTip.style.background = 'rgba(59, 130, 246, 0.15)';
+                    btnToggleTip.style.color = 'var(--text-primary)';
+                    if (tipToggleText) tipToggleText.textContent = 'Popup: ON';
+                } else {
+                    btnToggleTip.style.borderColor = 'var(--border-color)';
+                    btnToggleTip.style.background = 'rgba(255, 255, 255, 0.05)';
+                    btnToggleTip.style.color = 'var(--text-secondary)';
+                    if (tipToggleText) tipToggleText.textContent = 'Popup: OFF';
+                }
+                if (this.renderer) {
+                    this.renderer.setTooltipEnabled(tooltipOn);
+                }
+            });
+        }
+
+        // Grid Dimension Slider & Number
+        const sliderGrid = document.getElementById('slider-grid-size');
+        const inputGrid = document.getElementById('input-grid-size');
+        const gridH = document.getElementById('grid-size-h');
+
+        const updateGridSize = (size) => {
+            size = clamp(parseInt(size, 10) || 16, 5, 128);
+            this.syncGridSizeUI(size);
+
+            if (this.renderer) {
+                this.renderer.setGridSize(size);
+                this.updateMatrix();
+            }
+        };
+
+        if (sliderGrid) sliderGrid.addEventListener('input', (e) => updateGridSize(e.target.value));
+        if (inputGrid) inputGrid.addEventListener('change', (e) => updateGridSize(e.target.value));
+
+        document.querySelectorAll('.btn-preset').forEach(btn => {
+            btn.addEventListener('click', () => updateGridSize(btn.dataset.size));
+        });
+
+        const checkShortest = document.getElementById('check-shortest-hue');
+        if (checkShortest) {
+            checkShortest.addEventListener('change', () => this.updateMatrix());
+        }
+
+        // Zoom Controls
+        const btnZoomIn = document.getElementById('btn-zoom-in');
+        const btnZoomOut = document.getElementById('btn-zoom-out');
+        const btnZoomFit = document.getElementById('btn-zoom-fit');
+
+        if (btnZoomIn) btnZoomIn.addEventListener('click', () => this.renderer && this.renderer.zoomIn());
+        if (btnZoomOut) btnZoomOut.addEventListener('click', () => this.renderer && this.renderer.zoomOut());
+        if (btnZoomFit) btnZoomFit.addEventListener('click', () => this.renderer && this.renderer.resetZoom());
+    }
+
+    updateMatrix() {
+        if (!this.renderer) return;
+        const { generateFamilyMatrix, generateRangeMatrix, hexToHsl } = window.ColorMath;
+
+        const size = this.renderer.gridSize;
+        const mode = this.renderer.mode;
+
+        if (mode === 'family') {
+            const matrix = generateFamilyMatrix(this.primaryHex, size, size);
+            this.renderer.updateMatrixData(matrix);
+            
+            // Update UI badges for calculated step sizes
+            const stepSat = matrix.stepSat !== undefined ? matrix.stepSat.toFixed(1) : (size > 1 ? (100 / (size - 1)).toFixed(1) : '0');
+            const stepLight = matrix.stepLight !== undefined ? matrix.stepLight.toFixed(1) : (size > 1 ? (100 / (size - 1)).toFixed(1) : '0');
+            const elHue = document.getElementById('fam-hue-val');
+            const elStepS = document.getElementById('fam-step-sat');
+            const elStepL = document.getElementById('fam-step-light');
+            const hsl = hexToHsl(this.primaryHex);
+            if (elHue) elHue.textContent = `${hsl.h}°`;
+            if (elStepS) elStepS.textContent = `${stepSat}% / cell`;
+            if (elStepL) elStepL.textContent = `${stepLight}% / cell`;
+        } else if (mode === 'range') {
+            const shortestHue = document.getElementById('check-shortest-hue')?.checked ?? true;
+            const matrix = generateRangeMatrix(this.primaryHex, this.secondaryHex, size, size, shortestHue);
+            this.renderer.updateMatrixData(matrix);
+        } else if (mode === 'draw') {
+            this.renderer.render();
+        }
+    }
+
+    // ==========================================
+    // 3. Custom Drawing Tools & Actions
+    // ==========================================
+
+    bindDrawTools() {
+        const toolBtns = document.querySelectorAll('.draw-tools .tool-btn');
+        toolBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                toolBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if (this.renderer) this.renderer.setTool(btn.dataset.tool);
+            });
+        });
+
+        const sizeBtns = document.querySelectorAll('.brush-sizes .brush-size-btn');
+        sizeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                sizeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if (this.renderer) this.renderer.setBrushSize(btn.dataset.size);
+            });
+        });
+
+        const btnUndo = document.getElementById('btn-undo');
+        const btnRedo = document.getElementById('btn-redo');
+        const btnClear = document.getElementById('btn-clear-draw');
+        const btnImport = document.getElementById('btn-import-img');
+        const inputImport = document.getElementById('input-import-img');
+
+        if (btnImport && inputImport) {
+            btnImport.addEventListener('click', () => inputImport.click());
+            inputImport.addEventListener('change', (e) => {
+                const file = e.target.files?.[0];
+                if (file && this.renderer) {
+                    this.renderer.loadImageFile(file);
+                    inputImport.value = '';
+                }
+            });
+        }
+
+        if (btnUndo) btnUndo.addEventListener('click', () => this.renderer && this.renderer.undo());
+        if (btnRedo) btnRedo.addEventListener('click', () => this.renderer && this.renderer.redo());
+        if (btnClear) btnClear.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear your drawing?')) {
+                this.renderer && this.renderer.clearDrawGrid();
+            }
+        });
+
+        // Keyboard shortcuts (Ctrl+Z, Ctrl+Y, B, E, F, I)
+        window.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            if (this.renderer && this.renderer.mode === 'draw') {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                    e.preventDefault();
+                    if (e.shiftKey) this.renderer.redo();
+                    else this.renderer.undo();
+                } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+                    e.preventDefault();
+                    this.renderer.redo();
+                } else if (e.key.toLowerCase() === 'b') {
+                    document.querySelector('.tool-btn[data-tool="brush"]')?.click();
+                } else if (e.key.toLowerCase() === 'e') {
+                    document.querySelector('.tool-btn[data-tool="eraser"]')?.click();
+                } else if (e.key.toLowerCase() === 'f') {
+                    document.querySelector('.tool-btn[data-tool="fill"]')?.click();
+                } else if (e.key.toLowerCase() === 'i') {
+                    document.querySelector('.tool-btn[data-tool="eyedropper"]')?.click();
+                }
+            }
+        });
+    }
+
+    bindQuickHarmonies() {
+        // Handled dynamically in updateHarmonySwatches
+    }
+
+    bindCopyButtons() {
+        document.querySelectorAll('.btn-copy').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = btn.dataset.target;
+                let textToCopy = '';
+
+                if (target === 'input-hex') {
+                    textToCopy = `#${document.getElementById('input-hex')?.value || ''}`;
+                } else if (target === 'rgb-string') {
+                    const r = document.getElementById('input-r')?.value || '0';
+                    const g = document.getElementById('input-g')?.value || '0';
+                    const b = document.getElementById('input-b')?.value || '0';
+                    textToCopy = `rgb(${r}, ${g}, ${b})`;
+                } else if (target === 'hsl-string') {
+                    const h = document.getElementById('input-h')?.value || '0';
+                    const s = document.getElementById('input-s')?.value || '0';
+                    const l = document.getElementById('input-l')?.value || '0';
+                    textToCopy = `hsl(${h}, ${s}%, ${l}%)`;
+                }
+
+                if (textToCopy) {
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        const originalText = btn.textContent;
+                        btn.textContent = 'Copied!';
+                        btn.classList.add('copied');
+                        setTimeout(() => {
+                            btn.textContent = originalText;
+                            btn.classList.remove('copied');
+                        }, 1500);
+                    });
+                }
+            });
+        });
+    }
+
+    bindExportButtons() {
+        const btnPng = document.getElementById('btn-export-png');
+        const btnJson = document.getElementById('btn-export-json');
+
+        if (btnPng) btnPng.addEventListener('click', () => this.renderer && this.renderer.exportPNG());
+        if (btnJson) btnJson.addEventListener('click', () => this.renderer && this.renderer.exportJSON());
+    }
+}
+
+// Start Application on DOM Content Loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new AppController();
+});
+
+    </script>
+</body>
+</html>
