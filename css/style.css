@@ -840,9 +840,21 @@ body {
     margin-left: auto;
 }
 
+/* Matrix Main Area (Canvas + Sidebox) */
+.matrix-main-area {
+    flex: 1;
+    display: flex;
+    gap: 12px;
+    min-height: 0;
+    overflow: hidden;
+    width: 100%;
+}
+
 /* Canvas Viewport */
 #canvas-container {
     flex: 1;
+    min-width: 0;
+    height: 100%;
     position: relative;
     background: #060911;
     border-radius: 12px;
@@ -859,6 +871,195 @@ body {
     cursor: crosshair;
     width: 100%;
     height: 100%;
+}
+
+/* Scrollable Color Name Sidebox */
+#color-names-sidebox {
+    width: 260px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.sidebox-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
+.sidebox-tabs {
+    display: flex;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 3px;
+    border-radius: 6px;
+}
+
+.sidebox-tab {
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.sidebox-tab.active {
+    background: var(--accent-blue);
+    color: white;
+}
+
+.btn-clear-hl {
+    padding: 3px 8px;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 4px;
+    color: var(--danger-red);
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-clear-hl:hover {
+    background: rgba(239, 68, 68, 0.3);
+    transform: scale(1.05);
+}
+
+.sidebox-search input {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.sidebox-search input:focus {
+    border-color: var(--border-focus);
+}
+
+.sidebox-list-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 4px;
+}
+
+.sidebox-list-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebox-list-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+}
+
+.color-name-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.color-name-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.color-name-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.color-name-item.has-blocks {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.color-name-item.active {
+    background: rgba(250, 204, 21, 0.18);
+    border-color: #FACC15;
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.25);
+}
+
+.item-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.item-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+    box-shadow: 0 0 4px rgba(0,0,0,0.4);
+}
+
+.item-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.item-hex {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.item-count {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+    transition: all var(--transition-fast);
+}
+
+.item-count.has-count {
+    background: rgba(59, 130, 246, 0.25);
+    color: #60A5FA;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.color-name-item.active .item-count {
+    background: #FACC15;
+    color: #000;
+    border-color: #FACC15;
 }
 
 /* Hover Tooltip Popup Box */

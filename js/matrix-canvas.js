@@ -37,9 +37,10 @@ class MatrixRenderer {
         this.historyIndex = -1;
         this.maxHistory = 40;
 
-        // Tooltip State
+        // Tooltip & Highlight State
         this.hoveredCell = null;
         this.tooltipEnabled = true;
+        this.highlightedName = null; // { lang: 'english'|'chinese', name: string }
 
         // Initialize drawing grid
         this.initDrawGrid(16);
@@ -92,7 +93,8 @@ class MatrixRenderer {
         const { hexToRgb, rgbToHsl } = window.ColorMath;
         const rgb = hexToRgb(hex);
         const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-        return { hex, rgb, hsl, col: c, row: r };
+        const closest = window.ColorNames ? window.ColorNames.findClosest(hex) : null;
+        return { hex, rgb, hsl, col: c, row: r, closest };
     }
 
     initDrawGrid(size) {
@@ -110,10 +112,25 @@ class MatrixRenderer {
     updateMatrixData(data) {
         this.matrixData = data;
         this.render();
+        if (window.appController && typeof window.appController.updateColorNameCounts === 'function') {
+            window.appController.updateColorNameCounts();
+        }
     }
 
     setMode(mode) {
         this.mode = mode;
+        this.render();
+        if (window.appController && typeof window.appController.updateColorNameCounts === 'function') {
+            window.appController.updateColorNameCounts();
+        }
+    }
+
+    setHighlightName(lang, name) {
+        if (!lang || !name) {
+            this.highlightedName = null;
+        } else {
+            this.highlightedName = { lang, name };
+        }
         this.render();
     }
 
@@ -222,6 +239,18 @@ class MatrixRenderer {
 
                 this.ctx.fillStyle = cell.hex;
                 this.ctx.fillRect(Math.floor(x), Math.floor(y), Math.ceil(cellSize), Math.ceil(cellSize));
+
+                // Check color name highlight filter
+                if (this.highlightedName) {
+                    const closest = cell.closest || (window.ColorNames ? window.ColorNames.findClosest(cell.hex) : null);
+                    if (!cell.closest && closest) cell.closest = closest;
+                    const isMatch = closest && closest[this.highlightedName.lang] === this.highlightedName.name;
+                    if (!isMatch) {
+                        // Dim non-matching cells by drawing a semi-transparent dark overlay
+                        this.ctx.fillStyle = 'rgba(6, 9, 17, 0.78)';
+                        this.ctx.fillRect(Math.floor(x), Math.floor(y), Math.ceil(cellSize), Math.ceil(cellSize));
+                    }
+                }
 
                 // Draw crisp grid lines only if cells are large enough (> 5px) to prevent moiré patterns
                 if (cellSize > 5) {
@@ -613,6 +642,9 @@ class MatrixRenderer {
             this.historyIndex++;
         }
         this.updateUndoRedoUI();
+        if (window.appController && typeof window.appController.updateColorNameCounts === 'function') {
+            window.appController.updateColorNameCounts();
+        }
     }
 
     undo() {
@@ -626,6 +658,9 @@ class MatrixRenderer {
             }
             this.render();
             this.updateUndoRedoUI();
+            if (window.appController && typeof window.appController.updateColorNameCounts === 'function') {
+                window.appController.updateColorNameCounts();
+            }
         }
     }
 
@@ -640,6 +675,9 @@ class MatrixRenderer {
             }
             this.render();
             this.updateUndoRedoUI();
+            if (window.appController && typeof window.appController.updateColorNameCounts === 'function') {
+                window.appController.updateColorNameCounts();
+            }
         }
     }
 

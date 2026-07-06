@@ -29,6 +29,8 @@ class AppController {
 
         // Initial sync
         this.updateColorFromHex(this.primaryHex, 'init');
+        this.initColorNamesSidebox();
+        this.updateColorNameCounts();
     }
 
     setupRenderer() {
@@ -225,6 +227,183 @@ class AppController {
             this.selectPicker('primary', false);
             this.updateColorFromHex(closest.chineseHex);
         };
+    }
+
+    initColorNamesSidebox() {
+        if (!window.ColorNames) return;
+        const listEn = document.getElementById('list-names-en');
+        const listZh = document.getElementById('list-names-zh');
+        const tabEn = document.getElementById('tab-sidebox-en');
+        const tabZh = document.getElementById('tab-sidebox-zh');
+        const btnClear = document.getElementById('btn-clear-highlight');
+        const inputSearch = document.getElementById('input-search-name');
+
+        const createItem = (item, lang) => {
+            const li = document.createElement('li');
+            li.className = 'color-name-item';
+            li.dataset.name = item.name;
+            li.dataset.lang = lang;
+            li.dataset.hex = item.hex.toLowerCase();
+            li.innerHTML = `
+                <div class="item-left">
+                    <span class="item-swatch" style="background-color: ${item.hex}"></span>
+                    <span class="item-name" title="${item.name}">${item.name}</span>
+                </div>
+                <div class="item-right">
+                    <span class="item-hex font-mono">${item.hex.toUpperCase()}</span>
+                    <span class="item-count">0</span>
+                </div>
+            `;
+            li.addEventListener('click', () => this.onSelectColorName(lang, item.name, li));
+            return li;
+        };
+
+        if (listEn) {
+            listEn.innerHTML = '';
+            window.ColorNames.english.forEach(item => listEn.appendChild(createItem(item, 'english')));
+        }
+        if (listZh) {
+            listZh.innerHTML = '';
+            window.ColorNames.chinese.forEach(item => listZh.appendChild(createItem(item, 'chinese')));
+        }
+
+        if (tabEn && tabZh && listEn && listZh) {
+            tabEn.addEventListener('click', () => {
+                tabEn.classList.add('active');
+                tabZh.classList.remove('active');
+                listEn.classList.remove('hidden');
+                listZh.classList.add('hidden');
+            });
+            tabZh.addEventListener('click', () => {
+                tabZh.classList.add('active');
+                tabEn.classList.remove('active');
+                listZh.classList.remove('hidden');
+                listEn.classList.add('hidden');
+            });
+        }
+
+        if (btnClear) {
+            btnClear.addEventListener('click', () => this.clearColorNameHighlight());
+        }
+
+        if (inputSearch) {
+            inputSearch.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                const filterList = (list) => {
+                    if (!list) return;
+                    list.querySelectorAll('.color-name-item').forEach(li => {
+                        const name = (li.dataset.name || '').toLowerCase();
+                        const hex = (li.dataset.hex || '').toLowerCase();
+                        const count = parseInt(li.dataset.count || 0, 10);
+                        const matchesSearch = !query || name.includes(query) || hex.includes(query);
+                        
+                        if (matchesSearch && (query || count > 0)) {
+                            li.style.display = 'flex';
+                        } else {
+                            li.style.display = 'none';
+                        }
+                    });
+                };
+                filterList(listEn);
+                filterList(listZh);
+            });
+        }
+    }
+
+    onSelectColorName(lang, name, liEl) {
+        const isAlreadyActive = liEl.classList.contains('active');
+        if (isAlreadyActive) {
+            this.clearColorNameHighlight();
+            return;
+        }
+
+        document.querySelectorAll('.color-name-item').forEach(item => item.classList.remove('active'));
+        liEl.classList.add('active');
+
+        const btnClear = document.getElementById('btn-clear-highlight');
+        if (btnClear) btnClear.classList.remove('hidden');
+
+        if (this.renderer) {
+            this.renderer.setHighlightName(lang, name);
+        }
+    }
+
+    clearColorNameHighlight() {
+        document.querySelectorAll('.color-name-item').forEach(item => item.classList.remove('active'));
+        const btnClear = document.getElementById('btn-clear-highlight');
+        if (btnClear) btnClear.classList.add('hidden');
+
+        if (this.renderer) {
+            this.renderer.setHighlightName(null, null);
+        }
+    }
+
+    updateColorNameCounts() {
+        if (!this.renderer || !window.ColorNames) return;
+        const data = this.renderer.mode === 'draw' ? this.renderer.drawGridData : this.renderer.matrixData;
+        if (!data) return;
+
+        const engCounts = {};
+        const zhCounts = {};
+
+        for (let r = 0; r < data.length; r++) {
+            if (!data[r]) continue;
+            for (let c = 0; c < data[r].length; c++) {
+                const cell = data[r][c];
+                if (!cell) continue;
+                let closest = cell.closest;
+                if (!closest) {
+                    closest = window.ColorNames.findClosest(cell.hex);
+                    cell.closest = closest;
+                }
+                engCounts[closest.english] = (engCounts[closest.english] || 0) + 1;
+                zhCounts[closest.chinese] = (zhCounts[closest.chinese] || 0) + 1;
+            }
+        }
+
+        const query = (document.getElementById('input-search-name')?.value || '').toLowerCase().trim();
+        const updateListCounts = (listId, countsMap) => {
+            const list = document.getElementById(listId);
+            if (!list) return;
+            
+            const items = Array.from(list.querySelectorAll('.color-name-item'));
+            items.forEach(li => {
+                const name = li.dataset.name;
+                const count = countsMap[name] || 0;
+                li.dataset.count = count;
+                const badge = li.querySelector('.item-count');
+                if (badge) {
+                    badge.textContent = count;
+                    badge.classList.toggle('has-count', count > 0);
+                }
+                li.classList.toggle('has-blocks', count > 0);
+            });
+
+            // Sort items by count descending (highest block count at top)
+            items.sort((a, b) => {
+                const countA = parseInt(a.dataset.count || 0, 10);
+                const countB = parseInt(b.dataset.count || 0, 10);
+                return countB - countA;
+            });
+
+            // Re-append items in sorted order and hide those with 0 blocks (unless actively searching)
+            items.forEach(li => {
+                list.appendChild(li);
+                const count = parseInt(li.dataset.count || 0, 10);
+                const name = (li.dataset.name || '').toLowerCase();
+                const hex = (li.dataset.hex || '').toLowerCase();
+                const matchesSearch = !query || name.includes(query) || hex.includes(query);
+
+                if (matchesSearch && (query || count > 0)) {
+                    li.style.display = 'flex';
+                } else {
+                    li.style.display = 'none';
+                }
+            });
+        };
+
+        updateListCounts('list-names-en', engCounts);
+        updateListCounts('list-names-zh', zhCounts);
     }
 
     setVal(id, val) {
@@ -565,6 +744,7 @@ class AppController {
             this.renderer.updateMatrixData(matrix);
         } else if (mode === 'draw') {
             this.renderer.render();
+            this.updateColorNameCounts();
         }
     }
 

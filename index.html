@@ -413,9 +413,32 @@
                     </div>
                 </div>
 
-                <!-- Canvas Viewport Container -->
-                <div id="canvas-container">
-                    <canvas id="matrix-canvas"></canvas>
+                <!-- Matrix Main Area (Canvas + Side Color Names Dictionary) -->
+                <div class="matrix-main-area">
+                    <!-- Canvas Viewport Container -->
+                    <div id="canvas-container">
+                        <canvas id="matrix-canvas"></canvas>
+                    </div>
+
+                    <!-- Scrollable Color Name List Box -->
+                    <aside id="color-names-sidebox" class="glass-card">
+                        <div class="sidebox-header">
+                            <div class="sidebox-tabs">
+                                <button class="sidebox-tab active" id="tab-sidebox-en" data-lang="english">EN (140)</button>
+                                <button class="sidebox-tab" id="tab-sidebox-zh" data-lang="chinese">雅称 (163)</button>
+                            </div>
+                            <button id="btn-clear-highlight" class="btn-clear-hl hidden" title="Clear block highlight">
+                                <span>✕ Clear</span>
+                            </button>
+                        </div>
+                        <div class="sidebox-search">
+                            <input type="text" id="input-search-name" placeholder="🔍 Search names or hex...">
+                        </div>
+                        <div class="sidebox-list-wrapper">
+                            <ul id="list-names-en" class="color-name-list"></ul>
+                            <ul id="list-names-zh" class="color-name-list hidden"></ul>
+                        </div>
+                    </aside>
                 </div>
             </section>
         </main>

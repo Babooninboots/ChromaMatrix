@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ChromaMatrix Pro 鈥?Color Names Dictionaries & Closest Match Engine
  * Contains 140 English HTML Color Names and Traditional Chinese Colors (闆呯О)
  */
@@ -178,7 +178,7 @@ window.ColorNames = {
         { name: "火红", hex: "#FF2D51" },
         { name: "朱膘", hex: "#F36838" },
         { name: "妃色", hex: "#ED5736" },
-        { name: "洋红", hex: "#FF4777" },
+        { name: "娇红", hex: "#FF4777" },
         { name: "品红", hex: "#F00056" },
         { name: "粉红", hex: "#FFB3A7" },
         { name: "桃红", hex: "#F47983" },
@@ -206,7 +206,6 @@ window.ColorNames = {
         { name: "赫赤", hex: "#C91F37" },
         { name: "银朱", hex: "#BF242A" },
         { name: "赤", hex: "#C3272B" },
-        { name: "胭脂", hex: "#9D2933" },
         { name: "栗色", hex: "#60281E" },
         { name: "玄色", hex: "#622A1D" },
         { name: "松花色", hex: "#BCE672" },
@@ -234,7 +233,7 @@ window.ColorNames = {
         { name: "玉色", hex: "#2EDFA3" },
         { name: "缥", hex: "#7FECAD" },
         { name: "艾绿", hex: "#A4E2C6" },
-        { name: "石青", hex: "#7BCFA6" },
+        { name: "玉青", hex: "#7BCFA6" },
         { name: "碧色", hex: "#1BD1A5" },
         { name: "青碧", hex: "#48C0A3" },
         { name: "铜绿", hex: "#549688" },
@@ -311,11 +310,16 @@ window.ColorNames = {
         { name: "漆黑", hex: "#161823" },
         { name: "黑色", hex: "#000000" }
     ],
+    cache: new Map(),
     findClosest: function(targetHex) {
-        if (!targetHex || !window.ColorMath) return { english: "Unknown", englishHex: "#000000", chinese: "鏈煡", chineseHex: "#000000" };
+        if (!targetHex || !window.ColorMath) return { english: "Unknown", englishHex: "#000000", chinese: "\u672a\u77e5", chineseHex: "#000000" };
+        targetHex = targetHex.toUpperCase();
+        if (this.cache.has(targetHex)) {
+            return this.cache.get(targetHex);
+        }
         const { hexToRgb } = window.ColorMath;
         const targetRgb = hexToRgb(targetHex);
-        if (!targetRgb) return { english: "Unknown", englishHex: "#000000", chinese: "鏈煡", chineseHex: "#000000" };
+        if (!targetRgb) return { english: "Unknown", englishHex: "#000000", chinese: "\u672a\u77e5", chineseHex: "#000000" };
         
         const calcDistance = (rgb1, rgb2) => {
             const rMean = (rgb1.r + rgb2.r) / 2;
@@ -351,11 +355,13 @@ window.ColorNames = {
             }
         }
 
-        return {
+        const result = {
             english: closestEng ? closestEng.name : "Unknown",
             englishHex: closestEng ? closestEng.hex : "#000000",
-            chinese: closestChi ? closestChi.name : "鏈煡",
+            chinese: closestChi ? closestChi.name : "\u672a\u77e5",
             chineseHex: closestChi ? closestChi.hex : "#000000"
         };
+        this.cache.set(targetHex, result);
+        return result;
     }
 };

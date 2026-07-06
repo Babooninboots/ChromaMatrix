@@ -851,9 +851,21 @@ body {
     margin-left: auto;
 }
 
+/* Matrix Main Area (Canvas + Sidebox) */
+.matrix-main-area {
+    flex: 1;
+    display: flex;
+    gap: 12px;
+    min-height: 0;
+    overflow: hidden;
+    width: 100%;
+}
+
 /* Canvas Viewport */
 #canvas-container {
     flex: 1;
+    min-width: 0;
+    height: 100%;
     position: relative;
     background: #060911;
     border-radius: 12px;
@@ -870,6 +882,195 @@ body {
     cursor: crosshair;
     width: 100%;
     height: 100%;
+}
+
+/* Scrollable Color Name Sidebox */
+#color-names-sidebox {
+    width: 260px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.sidebox-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
+.sidebox-tabs {
+    display: flex;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 3px;
+    border-radius: 6px;
+}
+
+.sidebox-tab {
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.sidebox-tab.active {
+    background: var(--accent-blue);
+    color: white;
+}
+
+.btn-clear-hl {
+    padding: 3px 8px;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 4px;
+    color: var(--danger-red);
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-clear-hl:hover {
+    background: rgba(239, 68, 68, 0.3);
+    transform: scale(1.05);
+}
+
+.sidebox-search input {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.sidebox-search input:focus {
+    border-color: var(--border-focus);
+}
+
+.sidebox-list-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 4px;
+}
+
+.sidebox-list-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebox-list-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+}
+
+.color-name-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.color-name-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.color-name-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.color-name-item.has-blocks {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.color-name-item.active {
+    background: rgba(250, 204, 21, 0.18);
+    border-color: #FACC15;
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.25);
+}
+
+.item-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.item-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+    box-shadow: 0 0 4px rgba(0,0,0,0.4);
+}
+
+.item-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.item-hex {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.item-count {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+    transition: all var(--transition-fast);
+}
+
+.item-count.has-count {
+    background: rgba(59, 130, 246, 0.25);
+    color: #60A5FA;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.color-name-item.active .item-count {
+    background: #FACC15;
+    color: #000;
+    border-color: #FACC15;
 }
 
 /* Hover Tooltip Popup Box */
@@ -1604,9 +1805,32 @@ input:checked + .slider-round:before {
                     </div>
                 </div>
 
-                <!-- Canvas Viewport Container -->
-                <div id="canvas-container">
-                    <canvas id="matrix-canvas"></canvas>
+                <!-- Matrix Main Area (Canvas + Side Color Names Dictionary) -->
+                <div class="matrix-main-area">
+                    <!-- Canvas Viewport Container -->
+                    <div id="canvas-container">
+                        <canvas id="matrix-canvas"></canvas>
+                    </div>
+
+                    <!-- Scrollable Color Name List Box -->
+                    <aside id="color-names-sidebox" class="glass-card">
+                        <div class="sidebox-header">
+                            <div class="sidebox-tabs">
+                                <button class="sidebox-tab active" id="tab-sidebox-en" data-lang="english">EN (140)</button>
+                                <button class="sidebox-tab" id="tab-sidebox-zh" data-lang="chinese">雅称 (163)</button>
+                            </div>
+                            <button id="btn-clear-highlight" class="btn-clear-hl hidden" title="Clear block highlight">
+                                <span>✕ Clear</span>
+                            </button>
+                        </div>
+                        <div class="sidebox-search">
+                            <input type="text" id="input-search-name" placeholder="🔍 Search names or hex...">
+                        </div>
+                        <div class="sidebox-list-wrapper">
+                            <ul id="list-names-en" class="color-name-list"></ul>
+                            <ul id="list-names-zh" class="color-name-list hidden"></ul>
+                        </div>
+                    </aside>
                 </div>
             </section>
         </main>
@@ -1824,7 +2048,7 @@ window.ColorNames = {
         { name: "火红", hex: "#FF2D51" },
         { name: "朱膘", hex: "#F36838" },
         { name: "妃色", hex: "#ED5736" },
-        { name: "洋红", hex: "#FF4777" },
+        { name: "娇红", hex: "#FF4777" },
         { name: "品红", hex: "#F00056" },
         { name: "粉红", hex: "#FFB3A7" },
         { name: "桃红", hex: "#F47983" },
@@ -1852,7 +2076,6 @@ window.ColorNames = {
         { name: "赫赤", hex: "#C91F37" },
         { name: "银朱", hex: "#BF242A" },
         { name: "赤", hex: "#C3272B" },
-        { name: "胭脂", hex: "#9D2933" },
         { name: "栗色", hex: "#60281E" },
         { name: "玄色", hex: "#622A1D" },
         { name: "松花色", hex: "#BCE672" },
@@ -1880,7 +2103,7 @@ window.ColorNames = {
         { name: "玉色", hex: "#2EDFA3" },
         { name: "缥", hex: "#7FECAD" },
         { name: "艾绿", hex: "#A4E2C6" },
-        { name: "石青", hex: "#7BCFA6" },
+        { name: "玉青", hex: "#7BCFA6" },
         { name: "碧色", hex: "#1BD1A5" },
         { name: "青碧", hex: "#48C0A3" },
         { name: "铜绿", hex: "#549688" },
@@ -1957,11 +2180,16 @@ window.ColorNames = {
         { name: "漆黑", hex: "#161823" },
         { name: "黑色", hex: "#000000" }
     ],
+    cache: new Map(),
     findClosest: function(targetHex) {
-        if (!targetHex || !window.ColorMath) return { english: "Unknown", englishHex: "#000000", chinese: "鏈煡", chineseHex: "#000000" };
+        if (!targetHex || !window.ColorMath) return { english: "Unknown", englishHex: "#000000", chinese: "\u672a\u77e5", chineseHex: "#000000" };
+        targetHex = targetHex.toUpperCase();
+        if (this.cache.has(targetHex)) {
+            return this.cache.get(targetHex);
+        }
         const { hexToRgb } = window.ColorMath;
         const targetRgb = hexToRgb(targetHex);
-        if (!targetRgb) return { english: "Unknown", englishHex: "#000000", chinese: "鏈煡", chineseHex: "#000000" };
+        if (!targetRgb) return { english: "Unknown", englishHex: "#000000", chinese: "\u672a\u77e5", chineseHex: "#000000" };
         
         const calcDistance = (rgb1, rgb2) => {
             const rMean = (rgb1.r + rgb2.r) / 2;
@@ -1997,12 +2225,14 @@ window.ColorNames = {
             }
         }
 
-        return {
+        const result = {
             english: closestEng ? closestEng.name : "Unknown",
             englishHex: closestEng ? closestEng.hex : "#000000",
-            chinese: closestChi ? closestChi.name : "鏈煡",
+            chinese: closestChi ? closestChi.name : "\u672a\u77e5",
             chineseHex: closestChi ? closestChi.hex : "#000000"
         };
+        this.cache.set(targetHex, result);
+        return result;
     }
 };
     </script>
@@ -2212,13 +2442,15 @@ function generateFamilyMatrix(baseHex, cols, rows) {
 
             const hex = hslToHex(h, s, l);
             const rgb = hslToRgb(h, s, l);
+            const closest = window.ColorNames ? window.ColorNames.findClosest(`#${hex}`) : null;
             
             rowData.push({
                 hex: `#${hex}`,
                 rgb: rgb,
                 hsl: { h, s, l },
                 col: c,
-                row: r
+                row: r,
+                closest: closest
             });
         }
         matrix.push(rowData);
@@ -2269,13 +2501,15 @@ function generateRangeMatrix(startHex, endHex, cols, rows, shortestHue = true) {
 
             const hex = hslToHex(h, s, l);
             const rgb = hslToRgb(h, s, l);
+            const closest = window.ColorNames ? window.ColorNames.findClosest(`#${hex}`) : null;
 
             rowData.push({
                 hex: `#${hex}`,
                 rgb: rgb,
                 hsl: { h, s, l },
                 col: c,
-                row: r
+                row: r,
+                closest: closest
             });
         }
         matrix.push(rowData);
@@ -2342,9 +2576,10 @@ class MatrixRenderer {
         this.historyIndex = -1;
         this.maxHistory = 40;
 
-        // Tooltip State
+        // Tooltip & Highlight State
         this.hoveredCell = null;
         this.tooltipEnabled = true;
+        this.highlightedName = null; // { lang: 'english'|'chinese', name: string }
 
         // Initialize drawing grid
         this.initDrawGrid(16);
@@ -2397,7 +2632,8 @@ class MatrixRenderer {
         const { hexToRgb, rgbToHsl } = window.ColorMath;
         const rgb = hexToRgb(hex);
         const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-        return { hex, rgb, hsl, col: c, row: r };
+        const closest = window.ColorNames ? window.ColorNames.findClosest(hex) : null;
+        return { hex, rgb, hsl, col: c, row: r, closest };
     }
 
     initDrawGrid(size) {
@@ -2415,10 +2651,25 @@ class MatrixRenderer {
     updateMatrixData(data) {
         this.matrixData = data;
         this.render();
+        if (window.appController && typeof window.appController.updateColorNameCounts === 'function') {
+            window.appController.updateColorNameCounts();
+        }
     }
 
     setMode(mode) {
         this.mode = mode;
+        this.render();
+        if (window.appController && typeof window.appController.updateColorNameCounts === 'function') {
+            window.appController.updateColorNameCounts();
+        }
+    }
+
+    setHighlightName(lang, name) {
+        if (!lang || !name) {
+            this.highlightedName = null;
+        } else {
+            this.highlightedName = { lang, name };
+        }
         this.render();
     }
 
@@ -2527,6 +2778,18 @@ class MatrixRenderer {
 
                 this.ctx.fillStyle = cell.hex;
                 this.ctx.fillRect(Math.floor(x), Math.floor(y), Math.ceil(cellSize), Math.ceil(cellSize));
+
+                // Check color name highlight filter
+                if (this.highlightedName) {
+                    const closest = cell.closest || (window.ColorNames ? window.ColorNames.findClosest(cell.hex) : null);
+                    if (!cell.closest && closest) cell.closest = closest;
+                    const isMatch = closest && closest[this.highlightedName.lang] === this.highlightedName.name;
+                    if (!isMatch) {
+                        // Dim non-matching cells by drawing a semi-transparent dark overlay
+                        this.ctx.fillStyle = 'rgba(6, 9, 17, 0.78)';
+                        this.ctx.fillRect(Math.floor(x), Math.floor(y), Math.ceil(cellSize), Math.ceil(cellSize));
+                    }
+                }
 
                 // Draw crisp grid lines only if cells are large enough (> 5px) to prevent moiré patterns
                 if (cellSize > 5) {
@@ -2918,6 +3181,9 @@ class MatrixRenderer {
             this.historyIndex++;
         }
         this.updateUndoRedoUI();
+        if (window.appController && typeof window.appController.updateColorNameCounts === 'function') {
+            window.appController.updateColorNameCounts();
+        }
     }
 
     undo() {
@@ -2931,6 +3197,9 @@ class MatrixRenderer {
             }
             this.render();
             this.updateUndoRedoUI();
+            if (window.appController && typeof window.appController.updateColorNameCounts === 'function') {
+                window.appController.updateColorNameCounts();
+            }
         }
     }
 
@@ -2945,6 +3214,9 @@ class MatrixRenderer {
             }
             this.render();
             this.updateUndoRedoUI();
+            if (window.appController && typeof window.appController.updateColorNameCounts === 'function') {
+                window.appController.updateColorNameCounts();
+            }
         }
     }
 
@@ -3045,6 +3317,8 @@ class AppController {
 
         // Initial sync
         this.updateColorFromHex(this.primaryHex, 'init');
+        this.initColorNamesSidebox();
+        this.updateColorNameCounts();
     }
 
     setupRenderer() {
@@ -3241,6 +3515,183 @@ class AppController {
             this.selectPicker('primary', false);
             this.updateColorFromHex(closest.chineseHex);
         };
+    }
+
+    initColorNamesSidebox() {
+        if (!window.ColorNames) return;
+        const listEn = document.getElementById('list-names-en');
+        const listZh = document.getElementById('list-names-zh');
+        const tabEn = document.getElementById('tab-sidebox-en');
+        const tabZh = document.getElementById('tab-sidebox-zh');
+        const btnClear = document.getElementById('btn-clear-highlight');
+        const inputSearch = document.getElementById('input-search-name');
+
+        const createItem = (item, lang) => {
+            const li = document.createElement('li');
+            li.className = 'color-name-item';
+            li.dataset.name = item.name;
+            li.dataset.lang = lang;
+            li.dataset.hex = item.hex.toLowerCase();
+            li.innerHTML = `
+                <div class="item-left">
+                    <span class="item-swatch" style="background-color: ${item.hex}"></span>
+                    <span class="item-name" title="${item.name}">${item.name}</span>
+                </div>
+                <div class="item-right">
+                    <span class="item-hex font-mono">${item.hex.toUpperCase()}</span>
+                    <span class="item-count">0</span>
+                </div>
+            `;
+            li.addEventListener('click', () => this.onSelectColorName(lang, item.name, li));
+            return li;
+        };
+
+        if (listEn) {
+            listEn.innerHTML = '';
+            window.ColorNames.english.forEach(item => listEn.appendChild(createItem(item, 'english')));
+        }
+        if (listZh) {
+            listZh.innerHTML = '';
+            window.ColorNames.chinese.forEach(item => listZh.appendChild(createItem(item, 'chinese')));
+        }
+
+        if (tabEn && tabZh && listEn && listZh) {
+            tabEn.addEventListener('click', () => {
+                tabEn.classList.add('active');
+                tabZh.classList.remove('active');
+                listEn.classList.remove('hidden');
+                listZh.classList.add('hidden');
+            });
+            tabZh.addEventListener('click', () => {
+                tabZh.classList.add('active');
+                tabEn.classList.remove('active');
+                listZh.classList.remove('hidden');
+                listEn.classList.add('hidden');
+            });
+        }
+
+        if (btnClear) {
+            btnClear.addEventListener('click', () => this.clearColorNameHighlight());
+        }
+
+        if (inputSearch) {
+            inputSearch.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                const filterList = (list) => {
+                    if (!list) return;
+                    list.querySelectorAll('.color-name-item').forEach(li => {
+                        const name = (li.dataset.name || '').toLowerCase();
+                        const hex = (li.dataset.hex || '').toLowerCase();
+                        const count = parseInt(li.dataset.count || 0, 10);
+                        const matchesSearch = !query || name.includes(query) || hex.includes(query);
+                        
+                        if (matchesSearch && (query || count > 0)) {
+                            li.style.display = 'flex';
+                        } else {
+                            li.style.display = 'none';
+                        }
+                    });
+                };
+                filterList(listEn);
+                filterList(listZh);
+            });
+        }
+    }
+
+    onSelectColorName(lang, name, liEl) {
+        const isAlreadyActive = liEl.classList.contains('active');
+        if (isAlreadyActive) {
+            this.clearColorNameHighlight();
+            return;
+        }
+
+        document.querySelectorAll('.color-name-item').forEach(item => item.classList.remove('active'));
+        liEl.classList.add('active');
+
+        const btnClear = document.getElementById('btn-clear-highlight');
+        if (btnClear) btnClear.classList.remove('hidden');
+
+        if (this.renderer) {
+            this.renderer.setHighlightName(lang, name);
+        }
+    }
+
+    clearColorNameHighlight() {
+        document.querySelectorAll('.color-name-item').forEach(item => item.classList.remove('active'));
+        const btnClear = document.getElementById('btn-clear-highlight');
+        if (btnClear) btnClear.classList.add('hidden');
+
+        if (this.renderer) {
+            this.renderer.setHighlightName(null, null);
+        }
+    }
+
+    updateColorNameCounts() {
+        if (!this.renderer || !window.ColorNames) return;
+        const data = this.renderer.mode === 'draw' ? this.renderer.drawGridData : this.renderer.matrixData;
+        if (!data) return;
+
+        const engCounts = {};
+        const zhCounts = {};
+
+        for (let r = 0; r < data.length; r++) {
+            if (!data[r]) continue;
+            for (let c = 0; c < data[r].length; c++) {
+                const cell = data[r][c];
+                if (!cell) continue;
+                let closest = cell.closest;
+                if (!closest) {
+                    closest = window.ColorNames.findClosest(cell.hex);
+                    cell.closest = closest;
+                }
+                engCounts[closest.english] = (engCounts[closest.english] || 0) + 1;
+                zhCounts[closest.chinese] = (zhCounts[closest.chinese] || 0) + 1;
+            }
+        }
+
+        const query = (document.getElementById('input-search-name')?.value || '').toLowerCase().trim();
+        const updateListCounts = (listId, countsMap) => {
+            const list = document.getElementById(listId);
+            if (!list) return;
+            
+            const items = Array.from(list.querySelectorAll('.color-name-item'));
+            items.forEach(li => {
+                const name = li.dataset.name;
+                const count = countsMap[name] || 0;
+                li.dataset.count = count;
+                const badge = li.querySelector('.item-count');
+                if (badge) {
+                    badge.textContent = count;
+                    badge.classList.toggle('has-count', count > 0);
+                }
+                li.classList.toggle('has-blocks', count > 0);
+            });
+
+            // Sort items by count descending (highest block count at top)
+            items.sort((a, b) => {
+                const countA = parseInt(a.dataset.count || 0, 10);
+                const countB = parseInt(b.dataset.count || 0, 10);
+                return countB - countA;
+            });
+
+            // Re-append items in sorted order and hide those with 0 blocks (unless actively searching)
+            items.forEach(li => {
+                list.appendChild(li);
+                const count = parseInt(li.dataset.count || 0, 10);
+                const name = (li.dataset.name || '').toLowerCase();
+                const hex = (li.dataset.hex || '').toLowerCase();
+                const matchesSearch = !query || name.includes(query) || hex.includes(query);
+
+                if (matchesSearch && (query || count > 0)) {
+                    li.style.display = 'flex';
+                } else {
+                    li.style.display = 'none';
+                }
+            });
+        };
+
+        updateListCounts('list-names-en', engCounts);
+        updateListCounts('list-names-zh', zhCounts);
     }
 
     setVal(id, val) {
@@ -3581,6 +4032,7 @@ class AppController {
             this.renderer.updateMatrixData(matrix);
         } else if (mode === 'draw') {
             this.renderer.render();
+            this.updateColorNameCounts();
         }
     }
 

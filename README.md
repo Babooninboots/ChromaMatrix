@@ -24,11 +24,15 @@
 - **Visual Badges**: Automatically evaluates accessibility compliance levels (`AAA`, `AA`, `AA Large`, or `Fail`).
 - **Quick Harmonies & Hover Popups**: Instant click-to-load swatches for Complementary, Analogous, and Triadic color harmonies. Hovering over any harmony swatch reveals a global floating popup displaying its exact HEX, RGB, and HSL color codes!
 
-### 3. 🖥️ High-Performance Interactive Color Matrix
+### 3. 🖥️ High-Performance Interactive Color Matrix & Sidebox Dictionary
 - **Scalable Dimensions**: Choose from quick presets (`5x5`, `16x16`, `32x32`, `64x64`, `128x128`) or use the custom slider to set any square grid dimension between 5 and 128.
 - **Zoom & Pan Camera**: 
   - Mouse wheel zooming (from `0.5x` up to `30x`) centered precisely at your mouse cursor.
   - Smooth dragging / panning across large grids using Middle-Click or holding `Spacebar` + Drag.
+- **Scrollable Color Name List Sidebox**: A dedicated interactive side panel alongside the matrix canvas featuring tabs for **English (140)** and **Chinese (163 雅称)** color dictionaries with instant search filtering.
+  - **Dynamic Histogram Sorting**: As you explore or paint on the canvas, the list **automatically sorts by block count in descending order (showing dominant colors at the very top)**.
+  - **Zero-Block Hiding**: In normal browsing mode, color names with **0 blocks are automatically hidden** to keep your palette breakdown clean and clutter-free! When typing in the filter box, matching names from the full dictionary are dynamically revealed.
+  - **Clean Block Highlighting**: Clicking any name in the sidebox instantly highlights matching blocks by cleanly darkening all non-matching blocks across all three modes (**Color Family**, **Color Range**, and **Custom Draw**).
 - **Hover Tooltip Popup Box**: A sleek glassmorphic floating badge tracks your mouse over the grid, instantly revealing the cell's coordinates (`Col, Row`), color swatch, and exact HEX, RGB, and HSL values. Can be switched **ON** and **OFF** on the fly using the dedicated toggle button located between the function selection buttons and Grid Size controls.
 
 ### 4. 🛠️ Three Powerful Matrix Modes
@@ -36,7 +40,7 @@
 #### 🔵 Color Family Mode
 Explores the Saturation and Lightness spectrum around your selected Master color:
 - **Centered ±20% Range**: Varies Saturation within **±20%** of the Master color along the X-axis and Lightness within **±20%** along the Y-axis, keeping the Master color positioned at the exact center of the matrix.
-- **Dynamic Edge Clamping & Step Recalculation**: If either end reaches **0%** or **100%** Saturation or Lightness, that edge is clamped to 0% or 100% and the step size dynamically recalculates.
+- **Dynamic Edge Clamping & Step Recalculation**: If either end reaches **0%** or **100%** Saturation or Lightness, that edge is capped at 0% or 100% and the step size dynamically recalculates to maintain visual balance.
 - **Real-Time Step Badges**: Displays exact calculated step percentages ($\Delta S$ and $\Delta L$) per cell for the current grid resolution.
 
 #### 🌈 Color Range Mode
@@ -71,7 +75,7 @@ For ultimate portability, we have packaged the entire application (HTML, CSS, Co
 Because the codebase uses clean global module scoping, you can also run the modular app directly from your file system without encountering browser CORS errors:
 1. Double-click `index.html` to open it in any modern web browser (Chrome, Edge, Firefox, Safari).
 
-### Option B: Local Static Server
+### Option C: Local Static Server
 If you prefer running via a local development server:
 ```bash
 # Using npx serve
@@ -88,13 +92,15 @@ Then navigate to `http://localhost:8000` in your browser.
 
 ```text
 ColorList/
-├── index.html          # Semantic HTML layout (Left Sidebar & Right Matrix Workspace)
+├── index.html              # Semantic HTML layout (Left Sidebar & Right Matrix Workspace)
+├── chroma-matrix-pro.html  # Standalone single-file bundle (~104 KB portable app)
 ├── css/
-│   └── style.css       # Studio Colorist dark mode theme, glassmorphism & responsive layout
+│   └── style.css           # Studio Colorist dark mode theme, glassmorphism & responsive layout
 └── js/
-    ├── color-math.js   # Precision color algorithms (HEX/RGB/HSL, WCAG, Matrix Generators)
-    ├── matrix-canvas.js # HTML5 Canvas 60 FPS renderer, zoom/pan camera & drawing engine
-    └── app.js          # Application state controller & UI event binding
+    ├── color-names.js      # Bilingual dictionary (140 EN / 163 ZH colors) & Euclidean matching
+    ├── color-math.js       # Precision color algorithms (HEX/RGB/HSL, WCAG, Matrix Generators)
+    ├── matrix-canvas.js    # HTML5 Canvas 60 FPS renderer, zoom/pan camera & drawing engine
+    └── app.js              # Application state controller & UI event binding
 ```
 
 ---

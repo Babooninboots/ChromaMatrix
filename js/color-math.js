@@ -203,13 +203,15 @@ function generateFamilyMatrix(baseHex, cols, rows) {
 
             const hex = hslToHex(h, s, l);
             const rgb = hslToRgb(h, s, l);
+            const closest = window.ColorNames ? window.ColorNames.findClosest(`#${hex}`) : null;
             
             rowData.push({
                 hex: `#${hex}`,
                 rgb: rgb,
                 hsl: { h, s, l },
                 col: c,
-                row: r
+                row: r,
+                closest: closest
             });
         }
         matrix.push(rowData);
@@ -260,13 +262,15 @@ function generateRangeMatrix(startHex, endHex, cols, rows, shortestHue = true) {
 
             const hex = hslToHex(h, s, l);
             const rgb = hslToRgb(h, s, l);
+            const closest = window.ColorNames ? window.ColorNames.findClosest(`#${hex}`) : null;
 
             rowData.push({
                 hex: `#${hex}`,
                 rgb: rgb,
                 hsl: { h, s, l },
                 col: c,
-                row: r
+                row: r,
+                closest: closest
             });
         }
         matrix.push(rowData);
