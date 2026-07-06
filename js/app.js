@@ -188,7 +188,43 @@ class AppController {
             this.updateMatrix();
         }
 
+        // Update Closest Color Names for Master Color
+        if (this.activePickerTarget === 'primary' || source === 'init') {
+            this.updateClosestNames(this.primaryHex);
+        }
+
         this.isSyncing = false;
+    }
+
+    updateClosestNames(hex) {
+        if (!window.ColorNames) return;
+        const closest = window.ColorNames.findClosest(hex);
+        
+        const nameEn = document.getElementById('name-closest-en');
+        const hexEn = document.getElementById('hex-closest-en');
+        const swatchEn = document.getElementById('swatch-closest-en');
+        if (nameEn) nameEn.textContent = closest.english;
+        if (hexEn) hexEn.textContent = closest.englishHex.toUpperCase();
+        if (swatchEn) swatchEn.style.backgroundColor = closest.englishHex;
+
+        const nameZh = document.getElementById('name-closest-zh');
+        const hexZh = document.getElementById('hex-closest-zh');
+        const swatchZh = document.getElementById('swatch-closest-zh');
+        if (nameZh) nameZh.textContent = closest.chinese;
+        if (hexZh) hexZh.textContent = closest.chineseHex.toUpperCase();
+        if (swatchZh) swatchZh.style.backgroundColor = closest.chineseHex;
+
+        const cardEn = document.getElementById('card-closest-en');
+        if (cardEn) cardEn.onclick = () => {
+            this.selectPicker('primary', false);
+            this.updateColorFromHex(closest.englishHex);
+        };
+        
+        const cardZh = document.getElementById('card-closest-zh');
+        if (cardZh) cardZh.onclick = () => {
+            this.selectPicker('primary', false);
+            this.updateColorFromHex(closest.chineseHex);
+        };
     }
 
     setVal(id, val) {
@@ -292,6 +328,8 @@ class AppController {
         const hexEl = document.getElementById('tooltip-hex');
         const rgbEl = document.getElementById('tooltip-rgb');
         const hslEl = document.getElementById('tooltip-hsl');
+        const nameEnEl = document.getElementById('tooltip-name-en');
+        const nameZhEl = document.getElementById('tooltip-name-zh');
 
         if (swatch) swatch.style.backgroundColor = hex;
         if (coords) coords.textContent = label;
@@ -299,8 +337,17 @@ class AppController {
         if (rgbEl) rgbEl.textContent = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
         if (hslEl) hslEl.textContent = `${hsl.h}°, ${hsl.s}%, ${hsl.l}%`;
 
-        const tipWidth = 220;
-        const tipHeight = 140;
+        if (window.ColorNames) {
+            const closest = window.ColorNames.findClosest(hex);
+            if (nameEnEl) nameEnEl.textContent = closest.english;
+            if (nameZhEl) nameZhEl.textContent = closest.chinese;
+        } else {
+            if (nameEnEl) nameEnEl.textContent = '-';
+            if (nameZhEl) nameZhEl.textContent = '-';
+        }
+
+        const tipWidth = 240;
+        const tipHeight = 180;
         
         let left = e.clientX + 15;
         let top = e.clientY + 15;

@@ -96,6 +96,36 @@
                         </div>
                     </div>
 
+                    <!-- Closest Color Names for Master Color -->
+                    <div class="color-group closest-names-group">
+                        <div class="group-label">
+                            <span class="badge name-badge" style="background: linear-gradient(135deg, #a855f7, #ec4899); color: #fff;">CLOSEST MATCH</span>
+                            <span class="closest-subtitle font-mono" style="font-size: 11px; opacity: 0.7;">Master Color</span>
+                        </div>
+                        <div class="closest-names-grid">
+                            <div class="closest-name-card" id="card-closest-en" title="Click to apply closest English HTML color">
+                                <div class="closest-swatch-wrapper">
+                                    <span class="closest-swatch" id="swatch-closest-en" style="background-color: #1E90FF;"></span>
+                                    <span class="closest-lang badge">EN</span>
+                                </div>
+                                <div class="closest-info">
+                                    <span class="closest-title" id="name-closest-en">DodgerBlue</span>
+                                    <span class="closest-hex font-mono" id="hex-closest-en">#1E90FF</span>
+                                </div>
+                            </div>
+                            <div class="closest-name-card" id="card-closest-zh" title="Click to apply closest Chinese traditional color (雅称)">
+                                <div class="closest-swatch-wrapper">
+                                    <span class="closest-swatch" id="swatch-closest-zh" style="background-color: #4B5CC4;"></span>
+                                    <span class="closest-lang badge" style="background: rgba(236, 72, 153, 0.2); color: #f472b6; border-color: rgba(236, 72, 153, 0.4);">雅称</span>
+                                </div>
+                                <div class="closest-info">
+                                    <span class="closest-title" id="name-closest-zh">宝蓝</span>
+                                    <span class="closest-hex font-mono" id="hex-closest-zh">#4B5CC4</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- HEX Input -->
                     <div class="color-group">
                         <div class="group-label">
@@ -410,10 +440,19 @@
                 <span class="t-label">HSL</span>
                 <span id="tooltip-hsl" class="t-val">0°, 0%, 0%</span>
             </div>
+            <div class="tooltip-row">
+                <span class="t-label">EN</span>
+                <span id="tooltip-name-en" class="t-val">-</span>
+            </div>
+            <div class="tooltip-row">
+                <span class="t-label">雅称</span>
+                <span id="tooltip-name-zh" class="t-val">-</span>
+            </div>
         </div>
     </div>
 
     <!-- Scripts (Standard scripts work natively over file:// protocol without CORS errors) -->
+    <script src="js/color-names.js"></script>
     <script src="js/color-math.js"></script>
     <script src="js/matrix-canvas.js"></script>
     <script src="js/app.js"></script>

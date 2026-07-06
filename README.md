@@ -11,10 +11,11 @@
 
 ## 🌟 Key Features
 
-### 1. 🔄 Real-Time Autosyncing Color Suite
-- **Widened Studio Sidebar**: The left panel features an expanded 420px layout with flexbox overflow protection, ensuring start and end color cards fit side-by-side with generous breathing room and zero clipping or text wrapping.
-- **Integrated Multi-Picker Suite**: Features a primary master color picker for **Color Family** and **Custom Draw** modes, and automatically reveals a secondary color picker and swap button when switching to **Color Range Mode**. Clicking either picker card links it to the autosyncing HEX, RGB, and HSL channel controls.
-- **Multi-Format Synchronization**: Type or modify colors in **HEX** (`#3B82F6`), **RGB** (`59, 130, 246`), or **HSL** (`217°, 91%, 60%`). Changing any value instantly updates all other inputs and sliders without circular update loops.
+### 1. 🎯 Integrated Color Pickers & Closest Color Names
+- **Master & End Color Pickers**: Two dedicated color picker cards in the left sidebar for controlling the Primary (Master) and Secondary (End) colors.
+- **Closest Color Names Engine**: Features a built-in color dictionary containing **140 English HTML Color Names** and **163 Traditional Chinese Color Names (雅称)**! Whenever you select or modify the Master Color, the closest English and Chinese color names are displayed instantly with clickable swatches to apply that exact color.
+- **Color Code Sync**: Entering or adjusting any color via HEX, RGB (0-255), or HSL (0-360°, 0-100%) automatically updates all sliders, numeric inputs, visual swatches, and closest names in real time without infinite feedback loops.
+- **Click-to-Copy**: One-click copy buttons for HEX, RGB, and HSL strings with brief "Copied!" feedback animations.
 - **Visual Channel Sliders**: Interactive gradients for Red, Green, Blue, Hue, Saturation, and Lightness channels.
 - **Master Picker & Copy Actions**: Pick colors directly from your OS color dialog and copy formatted codes to your clipboard with one-click checkmark feedback.
 

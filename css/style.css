@@ -866,7 +866,7 @@ body {
     position: fixed;
     top: 20px;
     left: 20px;
-    width: 210px;
+    width: 240px;
     padding: 12px;
     pointer-events: none;
     z-index: 9999;
@@ -924,6 +924,10 @@ body {
 .t-val {
     color: var(--text-primary);
     font-weight: 500;
+}
+
+.font-mono {
+    font-family: 'Fira Code', monospace;
 }
 
 /* Toggle Switch */
@@ -1056,22 +1060,27 @@ input:checked + .slider-round:before {
 }
 
 .color-swatch-wrapper {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     border-radius: 6px;
     overflow: hidden;
     flex-shrink: 0;
-    box-shadow: var(--shadow-sm);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--shadow-sm);
+    position: relative;
 }
 
 .color-swatch-wrapper input[type="color"] {
-    width: 150%;
-    height: 150%;
-    margin: -25%;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 34px;
+    height: 34px;
     border: none;
-    background: transparent;
+    padding: 0;
+    margin: 0;
     cursor: pointer;
+    background: transparent;
 }
 
 .picker-hex-text {
@@ -1103,3 +1112,78 @@ input:checked + .slider-round:before {
     display: none !important;
 }
 
+/* ==========================================================================
+   Closest Color Names (English & Traditional Chinese)
+   ========================================================================== */
+.closest-names-group {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.closest-names-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.closest-name-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.closest-name-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateX(2px);
+}
+
+.closest-swatch-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.closest-swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
+}
+
+.closest-lang {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.closest-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.closest-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.closest-hex {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}

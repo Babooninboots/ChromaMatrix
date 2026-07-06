@@ -436,6 +436,8 @@ class MatrixRenderer {
         const hexEl = document.getElementById('tooltip-hex');
         const rgbEl = document.getElementById('tooltip-rgb');
         const hslEl = document.getElementById('tooltip-hsl');
+        const nameEnEl = document.getElementById('tooltip-name-en');
+        const nameZhEl = document.getElementById('tooltip-name-zh');
 
         if (swatch) swatch.style.backgroundColor = cell.hex;
         if (coords) coords.textContent = `Col: ${cell.col + 1}, Row: ${cell.row + 1}`;
@@ -443,9 +445,18 @@ class MatrixRenderer {
         if (rgbEl) rgbEl.textContent = `${cell.rgb.r}, ${cell.rgb.g}, ${cell.rgb.b}`;
         if (hslEl) hslEl.textContent = `${cell.hsl.h}°, ${cell.hsl.s}%, ${cell.hsl.l}%`;
 
+        if (window.ColorNames) {
+            const closest = window.ColorNames.findClosest(cell.hex);
+            if (nameEnEl) nameEnEl.textContent = closest.english;
+            if (nameZhEl) nameZhEl.textContent = closest.chinese;
+        } else {
+            if (nameEnEl) nameEnEl.textContent = '-';
+            if (nameZhEl) nameZhEl.textContent = '-';
+        }
+
         // Position tooltip near mouse without clipping outside screen
-        const tipWidth = 220;
-        const tipHeight = 140;
+        const tipWidth = 240;
+        const tipHeight = 180;
         
         let left = e.clientX + 15;
         let top = e.clientY + 15;
